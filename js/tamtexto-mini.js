@@ -1,0 +1,1 @@
+function tamFuente(c,b){var a=document.getElementById(b);a.className="info-contenido-"+c};

@@ -1,0 +1,21 @@
+@charset "UTF-8";
+body{margin-top:0;background-color:#f2f8fe;}
+.contenedor{margin:0 auto;width:980px;}
+#logocmdf{position:absolute;margin:0px 0px 0px 10px;background:url('../images/cmdf.png') no-repeat;width:147px;height:60px;z-index:1;}
+#logoseduvi{position:absolute;margin:0px 0px 0px 400px;background:url('../images/seduvi.png') no-repeat;width:216px;height:60px;z-index:1;}
+#logoaep{position:absolute;margin:0px 0px 0px 910px;background:url('../images/aep.png') no-repeat;width:53px;height:60px;z-index:1;}
+.encabezado{width:980px; height:60px ;float:left; background:#576728;}
+.navegacion{height:22px;width:976px;background:#323533;border-top-width:1px;border-top-style:solid;border-top-color:#f8ebb9;float:left;padding:2px 2px 2px 2px; color: #fff;}
+.contenido{width:980px;background-color:#fff;float:left;}
+
+#tamano{float:right;width:75px;margin-top:5px;font-size:15px;}
+#tamano img{padding:0;margin:0;border-top-width:0;border-right-width:0;border-bottom-width:0;border-left-width:0;border-top-style:none;border-right-style:none;border-bottom-style:none;border-left-style:none;}
+.info-contenido{width:965px;float:left; margin-top: 5px;}
+.info-contenido li{background-repeat:no-repeat;padding-left:10px;list-style-type:none;background-position:3px 6px;margin-bottom:5px;}
+.info-contenido a,visited{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#036;text-decoration:none;}
+.info-contenido a:hover{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#036;text-decoration:underline;}
+.info-estudiantes{float:right;width:968px;border:1px solid #ccc;padding-left:10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#333;padding-bottom:10px;}
+#pie{ width: 980px; height: 100px; background:##323533;color: #fff;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:11px; clear:both; -moz-border-radius:5px;
+			-webkit-border-radius:5px;
+			border-radius:5px;}
+.pie a,visited{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:11px;color:#fff;}
