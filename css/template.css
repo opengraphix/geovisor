@@ -1,10 +1,13 @@
 @charset "UTF-8";
 body{margin-top:0;background-color:#f2f8fe;}
 .contenedor{margin:0 auto;width:980px;}
-#logocmdf{position:absolute;margin:0px 0px 0px 10px;background:url('../images/cmdf.png') no-repeat;width:147px;height:60px;z-index:1;}
-#logoseduvi{position:absolute;margin:0px 0px 0px 400px;background:url('../images/seduvi.png') no-repeat;width:216px;height:60px;z-index:1;}
-#logoaep{position:absolute;margin:0px 0px 0px 910px;background:url('../images/aep.png') no-repeat;width:53px;height:60px;z-index:1;}
-.encabezado{width:980px; height:60px ;float:left; background:#576728;}
+#logomexico{position:absolute;margin:0px 0px 0px 10px;background:url('../images/logo_cdmexico.png') no-repeat;width:119px;height:60px;z-index:1;}
+#logotlalpan{position:absolute;margin:0px 0px 0px 250px;background:url('../images/logo_tlalpan.png') no-repeat;width:47px;height:60px;z-index:1;}
+#logosedesol{position:absolute;margin:0px 0px 0px 420px;background:url('../images/logo_sedesol.png') no-repeat;width:95px;height:60px;z-index:1;}
+#logoprevencion{position:absolute;margin:0px 0px 0px 620px;background:url('../images/logo_prevencion.png') no-repeat;width:107px;height:60px;z-index:1;}
+#logoproteccion{position:absolute;margin:0px 0px 0px 910px;background:url('../images/logo_proteccion.png') no-repeat;width:61px;height:60px;z-index:1;}
+.top{width:980px;height:15px ;background-color:#576728;float:left;}
+.encabezado{width:980px; height:60px ;float:left; background:#fff;}
 .navegacion{height:22px;width:976px;background:#323533;border-top-width:1px;border-top-style:solid;border-top-color:#f8ebb9;float:left;padding:2px 2px 2px 2px; color: #fff;}
 .contenido{width:980px;background-color:#fff;float:left;}
 
@@ -15,7 +18,7 @@ body{margin-top:0;background-color:#f2f8fe;}
 .info-contenido a,visited{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#036;text-decoration:none;}
 .info-contenido a:hover{font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#036;text-decoration:underline;}
 .info-estudiantes{float:right;width:968px;border:1px solid #ccc;padding-left:10px;font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#333;padding-bottom:10px;}
-#pie{ width: 980px; height: 100px; background:##323533;color: #fff;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:11px; clear:both; -moz-border-radius:5px;
+#pie{ width: 980px; height: 100px; background:#323533;color: #fff;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:11px; clear:both; -moz-border-radius:5px;
 			-webkit-border-radius:5px;
 			border-radius:5px;}
 .pie a,visited{font-family:Verdana,Arial,Helvetica,sans-serif;font-size:11px;color:#fff;}
