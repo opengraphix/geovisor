@@ -66,16 +66,20 @@ Ext.onReady(function() {
   	
   	var traza = new OpenLayers.Layer.WMS(
       "Traza Urbana Tlalpan",
-      "http://132.248.26.87:8080/geoserver/wms", {
-        layers: "topp:09014_TrazaUrbanaTlalpan", 
+      "http://132.248.26.13:8080/geoserver/wms", {
+        layers: "unigeo:traza_urbana", 
+        srs: "EPSG:4326",
         transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        format: "image/png",
+        tiled: "true",
+        tilesOrigin : "473375.592548307,2113467.169301263" }, {isBaseLayer: false, visibility: false}
   	);
   	
   	var bancos = new OpenLayers.Layer.WMS(
       "Bancos",
-      "http://132.248.26.87:8080/geoserver/wms", {
-        layers: "topp:09014_Bancos", 
+      "http://132.248.26.13:8080/geoserver/wms", {
+        layers: "unigeo:Bancos",
+        srs: "EPSG:4326", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
   	);
@@ -329,7 +333,7 @@ var legend = new GeoExt.LegendPanel({
     new Ext.Panel({
         /*renderTo: document.body,*/ /*Esto hace que se ponga el mapa en el cuerpo del html sin llamar un div*/
         renderTo: gxmap,
-        width: 1024,
+        width: 960,
         height: 600,
         layout: "border",
         items: [mapPanel, tree, legend]
