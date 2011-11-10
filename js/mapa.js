@@ -1,6 +1,5 @@
 /*********************************
 *   Autor: Luis Ramirez
-*   Instituto de Geografía, UNAM
 *   Licencia: GPL
 *   Descripciòn: Archivo que contiene la configuración de capas y comportamiento de GeoEXT
 *********************************/
@@ -11,406 +10,214 @@ Ext.onReady(function() {
     var map = new OpenLayers.Map({allOverlays: true});
    
    /* Se inicializar las capas*/
-  	 var gpm =new OpenLayers.Layer.Google(
+  	
+  	 var gpm = new OpenLayers.Layer.Google(
                 "Google Physical",
                 {type: G_PHYSICAL_MAP}, {isBaseLayer: false, visibility: false}
             );
 			
-		var gsm = 	new OpenLayers.Layer.Google(
+	var gsm = new OpenLayers.Layer.Google(
                 "Google Streets", // the default
                 {numZoomLevels: 30}
             );
+	var gsat = new OpenLayers.Layer.Google(
+		        "Google Satellite",
+		        {type: G_SATELLITE_MAP}, {isBaseLayer: false, visibility: false}
+		    );
+		    
+	var glim = new OpenLayers.Layer.WMS(
+		"Global Imagery",
+        "http://maps.opengeo.org/geowebcache/service/wms", {
+        	layers: "bluemarble",
+        	format: "image/png" }, {isBaseLayer: false, visibility: false} 
+    );   
         
-    var otro_equipo_2 = new OpenLayers.Layer.WMS(
-      "Otros equipos",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otro_equipo_2", 
+    var estados = new OpenLayers.Layer.WMS(
+      "Estados",
+      "http://132.248.26.13:8080/geoserver/wms", {
+        layers: "unigeo:estados", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
+  	);
   
-   var mesa = new OpenLayers.Layer.WMS(
-      "Mesa",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:mesa", 
+  var vegetacion = new OpenLayers.Layer.WMS(
+      "Vegetación",
+      "http://132.248.26.13:8080/geoserver/wms", {
+        layers: "unigeo:vegetacion_densa", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
+  	);
   
-   var otro = new OpenLayers.Layer.WMS(
-      "Otros",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otro", 
+  var precipitacion = new OpenLayers.Layer.WMS(
+      "Precipitación media",
+      "http://132.248.26.13:8080/geoserver/wms", {
+        layers: "unigeo:precipitacion_media_anual", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
+  	);
   
-  var gim_abierto = new OpenLayers.Layer.WMS(
-      "Otros",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:gim_abierto", 
+    var localidadurbana = new OpenLayers.Layer.WMS(
+      "Localidad urbana",
+      "http://132.248.26.13:8080/geoserver/wms", {
+        layers: "unigeo:localidadurbana", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
+  	);
+  	
+  	var traza = new OpenLayers.Layer.WMS(
+      "Traza Urbana Tlalpan",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:09014_TrazaUrbanaTlalpan", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+  	);
+  	
+  	var bancos = new OpenLayers.Layer.WMS(
+      "Bancos",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:09014_Bancos", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+  	);
   
-var rampa_2 = new OpenLayers.Layer.WMS(
-      "Rampas",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:rampa_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
+ 	var vector = new OpenLayers.Layer.Vector("Vector");
   
-  var biciestacion = new OpenLayers.Layer.WMS(
-      "Biciestacion",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:biciestacion", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var metrobus = new OpenLayers.Layer.WMS(
-      "Metrobus",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:metrobus", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var otro_equipo = new OpenLayers.Layer.WMS(
-      "Otros equipos",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otro_equipo", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var sanitarios = new OpenLayers.Layer.WMS(
-      "Sanitarios",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:sanitarios", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var edif_admitivo = new OpenLayers.Layer.WMS(
-      "Edificios administrativos",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:edif_admitivo", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var banca = new OpenLayers.Layer.WMS(
-      "Bancas",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:banca", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-    
-var otro = new OpenLayers.Layer.WMS(
-      "Otros",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otro", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  var areas = new OpenLayers.Layer.WMS(
-      "Areas",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:areas", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var metro = new OpenLayers.Layer.WMS(
-      "Metro",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:metro", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var otro = new OpenLayers.Layer.WMS(
-      "Otros",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otro", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );	
-  
-  var museo = new OpenLayers.Layer.WMS(
-      "Museo",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:museo", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var rampa = new OpenLayers.Layer.WMS(
-      "Rampa",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:rampa", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var sitio_taxi = new OpenLayers.Layer.WMS(
-      "Sitio de taxis",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:sitio_taxi", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var areas_total = new OpenLayers.Layer.WMS(
-      "Areas total",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:areas_total", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-    var estacionamiento = new OpenLayers.Layer.WMS(
-      "Estacionamiento",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:estacionamiento", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var tienda_especializada_2 = new OpenLayers.Layer.WMS(
-      "Tiendas especializadas",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:tienda_especializada_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var bolardo_2 = new OpenLayers.Layer.WMS(
-      "Bolardo",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:bolardo_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var taller_educativo = new OpenLayers.Layer.WMS(
-      "Taller educativo",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:taller_educativo", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var gim_cerrado = new OpenLayers.Layer.WMS(
-      "Gimnacios cerrados",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:gim_cerrado", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var para_bus_2 = new OpenLayers.Layer.WMS(
-      "Parabus",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:para_bus_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var otro_servicios_2 = new OpenLayers.Layer.WMS(
-      "Otros servicios",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otro_servicios_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var otro_2 = new OpenLayers.Layer.WMS(
-      "Otros",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otro_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var biciestacion_2 = new OpenLayers.Layer.WMS(
-      "Biciestacion 2",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:biciestacion_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var sanitarios_2 = new OpenLayers.Layer.WMS(
-      "Sanitarios 2",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:sanitarios_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var banca_2 = new OpenLayers.Layer.WMS(
-      "Bancas 2",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:banca_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var luminaria_2 = new OpenLayers.Layer.WMS(
-      "Luminarias",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:luminaria_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var viveros = new OpenLayers.Layer.WMS(
-      "Viveros",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:viveros", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  var pista_skate = new OpenLayers.Layer.WMS(
-      "Pista skate",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:pista_skate", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  var juegos_inf_2 = new OpenLayers.Layer.WMS(
-      "Juegos infantiles",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:juegos_inf_2", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var pergola = new OpenLayers.Layer.WMS(
-      "Pergola",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:pergola", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var botes_basura = new OpenLayers.Layer.WMS(
-      "Botes basura",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:botes_basura", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var campo_fut = new OpenLayers.Layer.WMS(
-      "Campos Futbol",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:campo_fut", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var campo_futrapido = new OpenLayers.Layer.WMS(
-      "Campos Futbol Rápido",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:c_futrapido", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var canchas_basquet = new OpenLayers.Layer.WMS(
-      "Canchas Basquet",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:canchas_basquet", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var tienda_especializada = new OpenLayers.Layer.WMS(
-      "Tienda especializada",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:tienda_especializada", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var bolardo = new OpenLayers.Layer.WMS(
-      "Bolardo",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:bolardo", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-  var luminaria = new OpenLayers.Layer.WMS(
-      "luminaria",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:luminaria", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-	
-var otros_servicios = new OpenLayers.Layer.WMS(
-      "Otros servicios",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:otros_servicios", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );	  
-  
-  var parada_micro = new OpenLayers.Layer.WMS(
-      "Parada microbus",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:parada_micro", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-    var fuente = new OpenLayers.Layer.WMS(
-      "Fuentes",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:fuente", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-    var kiosko = new OpenLayers.Layer.WMS(
-      "Kioskos",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:kiosko", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-      var kiosko_servicio = new OpenLayers.Layer.WMS(
-      "Kioskos sercivio",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:kiosko_servicio", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
-  
-      var monumento = new OpenLayers.Layer.WMS(
-      "Monumento",
-      "http://132.248.14.226:8080/geoserver/wms", {
-        layers: "aepdf:monumento", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  );
     
    /* Pinta las capas del mapa*/
-    map.addLayers([gpm,gsm,otro_equipo_2,mesa,otro,gim_abierto, rampa_2, biciestacion,metrobus,otro_equipo, sanitarios, edif_admitivo, banca,areas,
-	metro,museo,sitio_taxi,areas_total,tienda_especializada_2, bolardo_2,taller_educativo,gim_cerrado, para_bus_2,otro_servicios_2,otro_2,biciestacion_2,sanitarios_2,
-	banca_2,luminaria_2,pista_skate, juegos_inf_2,pergola,botes_basura,campo_fut,tienda_especializada,bolardo,luminaria,otros_servicios,parada_micro,
-	canchas_basquet, campo_futrapido, estacionamiento,fuente,kiosko,kiosko_servicio]);
-    /*map.addControl(new OpenLayers.Control.LayerSwitcher());*/
-   /* map.zoomToMaxExtent();*/
+    map.addLayers([gpm,gsm,gsat,glim,estados,vegetacion,precipitacion,localidadurbana,traza,bancos,vector]);
 
    /* Fin  de inicio de capas*/ 
+  
+  /*-- Vector --*/
+ 
+ var ctrl, toolbarItems = [], action, actions = {};
+
+    // ZoomToMaxExtent control, a "button" control
+    action = new GeoExt.Action({
+        control: new OpenLayers.Control.ZoomToMaxExtent(),
+        map: map,
+        text: "maximizar extent",
+        tooltip: "Maximiza el extent"
+    });
+    actions["max_extent"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("-");
+
+    // Navigation control and DrawFeature controls
+    // in the same toggle group
+    action = new GeoExt.Action({
+        text: "navegar",
+        control: new OpenLayers.Control.Navigation(),
+        map: map,
+        // button options
+        toggleGroup: "draw",
+        allowDepress: false,
+        pressed: true,
+        tooltip: "navegar",
+        // check item options
+        group: "draw",
+        checked: true
+    });
+    actions["nav"] = action;
+    toolbarItems.push(action);
+
+    action = new GeoExt.Action({
+        text: "dibujar polígono",
+        control: new OpenLayers.Control.DrawFeature(
+            vector, OpenLayers.Handler.Polygon
+        ),
+        map: map,
+        // button options
+        toggleGroup: "draw",
+        allowDepress: false,
+        tooltip: "dibujar polígono",
+        // check item options
+        group: "draw"
+    });
+    actions["draw_poly"] = action;
+    toolbarItems.push(action);
+
+    action = new GeoExt.Action({
+        text: "dibujar línea",
+        control: new OpenLayers.Control.DrawFeature(
+            vector, OpenLayers.Handler.Path
+        ),
+        map: map,
+        // button options
+        toggleGroup: "draw",
+        allowDepress: false,
+        tooltip: "dibujar línea",
+        // check item options
+        group: "draw"
+    });
+    actions["draw_line"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("-");
+
+    // SelectFeature control, a "toggle" control
+    action = new GeoExt.Action({
+        text: "seleccionar",
+        control: new OpenLayers.Control.SelectFeature(vector, {
+            type: OpenLayers.Control.TYPE_TOGGLE,
+            hover: true
+        }),
+        map: map,
+        // button options
+        enableToggle: true,
+        tooltip: "seleccionar características"
+    });
+    actions["select"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("-");
+
+    // Navigation history - two "button" controls
+    ctrl = new OpenLayers.Control.NavigationHistory();
+    map.addControl(ctrl);
+
+    action = new GeoExt.Action({
+        text: "previo",
+        control: ctrl.previous,
+        disabled: true,
+        tooltip: "previous in history"
+    });
+    actions["previous"] = action;
+    toolbarItems.push(action);
+
+    action = new GeoExt.Action({
+        text: "siguiente",
+        control: ctrl.next,
+        disabled: true,
+        tooltip: "next in history"
+    });
+    actions["next"] = action;
+    toolbarItems.push(action);
+    toolbarItems.push("->");
+
+    // Reuse the GeoExt.Action objects created above
+    // as menu items
+    toolbarItems.push({
+        text: "menu",
+        menu: new Ext.menu.Menu({
+            items: [
+                // ZoomToMaxExtent
+                actions["max_extent"],
+                // Nav
+                new Ext.menu.CheckItem(actions["nav"]),
+                // Draw poly
+                new Ext.menu.CheckItem(actions["draw_poly"]),
+                // Draw line
+                new Ext.menu.CheckItem(actions["draw_line"]),
+                // Select control
+                new Ext.menu.CheckItem(actions["select"]),
+                // Navigation history control
+                actions["previous"],
+                actions["next"]
+            ]
+        })
+    });
+
+ 
+ /*-- Fin Vector --*/
    
    /*Escala en el mapa*/
     var scaleCombo = new Ext.form.ComboBox({
@@ -444,7 +251,8 @@ var otros_servicios = new OpenLayers.Layer.WMS(
           text: "Escala = 1 : "
           }, scaleCombo],
         zoom: 13,
-        center: [-99.169549942, 19.4115746403],
+        center: [-99.183056, 19.283056],
+        tbar: toolbarItems,
         /*Barra de zoom Slider*/
         items: [{
             xtype: "gx_zoomslider",
@@ -463,7 +271,7 @@ featureInfo.events.on({
     getfeatureinfo: function(e) {
         new GeoExt.Popup({
             title: "Informacion",
-            width: 200,
+            width: 700,
             height: 150,
             autoScroll: true,
             map: map,
@@ -521,8 +329,8 @@ var legend = new GeoExt.LegendPanel({
     new Ext.Panel({
         /*renderTo: document.body,*/ /*Esto hace que se ponga el mapa en el cuerpo del html sin llamar un div*/
         renderTo: gxmap,
-        width: 958,
-        height: 800,
+        width: 1024,
+        height: 600,
         layout: "border",
         items: [mapPanel, tree, legend]
     });
