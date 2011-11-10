@@ -256,7 +256,7 @@ Ext.onReady(function() {
           }, scaleCombo],
         zoom: 13,
         center: [-99.183056, 19.283056],
-        tbar: toolbarItems,
+       //tbar: toolbarItems,
         /*Barra de zoom Slider*/
         items: [{
             xtype: "gx_zoomslider",
