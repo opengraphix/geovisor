@@ -31,64 +31,171 @@ Ext.onReady(function() {
         	layers: "bluemarble",
         	format: "image/png" }, {isBaseLayer: false, visibility: false} 
     );   
-        
-    var estados = new OpenLayers.Layer.WMS(
-      "Estados",
-      "http://132.248.26.13:8080/geoserver/wms", {
-        layers: "unigeo:estados", 
+
+  var issste = new OpenLayers.Layer.WMS(
+      "ISSSTE",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:issste", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+  	);	
+	
+  var imss = new OpenLayers.Layer.WMS(
+      "IMSS",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:imss", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+  	);	
+	
+  var conalep = new OpenLayers.Layer.WMS(
+      "CONALEP",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:conalep", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+  	);
+	
+  var cetis = new OpenLayers.Layer.WMS(
+      "CETIS",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:cetis", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+  	);	
+	
+  var cendis = new OpenLayers.Layer.WMS(
+      "CENDIS",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:cendis", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
   	);
   
-  var vegetacion = new OpenLayers.Layer.WMS(
-      "Vegetación",
-      "http://132.248.26.13:8080/geoserver/wms", {
-        layers: "unigeo:vegetacion_densa", 
+  var cam = new OpenLayers.Layer.WMS(
+      "CAM",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:cam", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
   	);
   
-  var precipitacion = new OpenLayers.Layer.WMS(
-      "Precipitación media",
-      "http://132.248.26.13:8080/geoserver/wms", {
-        layers: "unigeo:precipitacion_media_anual", 
-        transparent: "true", 
-        format: "image/png" }, {isBaseLayer: false, visibility: false}
-  	);
-  
-    var localidadurbana = new OpenLayers.Layer.WMS(
-      "Localidad urbana",
-      "http://132.248.26.13:8080/geoserver/wms", {
-        layers: "unigeo:localidadurbana", 
+    var caic = new OpenLayers.Layer.WMS(
+      "CAIC",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:caic", 
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
   	);
   	
   	var traza = new OpenLayers.Layer.WMS(
       "Traza Urbana Tlalpan",
-      "http://132.248.26.13:8080/geoserver/wms", {
-        layers: "unigeo:traza_urbana", 
-        srs: "EPSG:4326",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:traza_urbana_tlalpan", 
         transparent: "true", 
-        format: "image/png",
-        tiled: "true",
-        tilesOrigin : "473375.592548307,2113467.169301263" }, {isBaseLayer: false, visibility: false}
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
   	);
   	
   	var bancos = new OpenLayers.Layer.WMS(
       "Bancos",
-      "http://132.248.26.13:8080/geoserver/wms", {
-        layers: "unigeo:Bancos",
-        srs: "EPSG:4326", 
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:bancos",
         transparent: "true", 
         format: "image/png" }, {isBaseLayer: false, visibility: false}
   	);
   
  	var vector = new OpenLayers.Layer.Vector("Vector");
+
+  var antroseg08 = new OpenLayers.Layer.WMS(
+      "Antro Seguro 2008",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:antro_seguro_2008", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );	
   
+  var antroseg09 = new OpenLayers.Layer.WMS(
+      "Antro Seguro 2009",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:antro_seguro_2009", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );
+  
+  var aurrera = new OpenLayers.Layer.WMS(
+      "Bodega Aurrera",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:bodega_aurrera", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );
+
+  var culturales = new OpenLayers.Layer.WMS(
+      "Centros Culturales",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:centros_culturales", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );	  
+    
+  var carburante = new OpenLayers.Layer.WMS(
+      "Gas Carburante",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:gas_carburante", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );
+
+  var gasolinerias = new OpenLayers.Layer.WMS(
+      "Gasolinerías",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:gasolinerias", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );	
+  
+  var guarderias_issste = new OpenLayers.Layer.WMS(
+      "Guarderias ISSSTE",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:guarderias_issste", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );
+  
+  var iglesias = new OpenLayers.Layer.WMS(
+      "Iglesias",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:iglesias", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );	  
+  
+  var mercados = new OpenLayers.Layer.WMS(
+      "Mercados",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:mercados", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );
+  
+  var museos = new OpenLayers.Layer.WMS(
+      "Museos",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:museos", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );
+
+  var oficinas_gobierno = new OpenLayers.Layer.WMS(
+      "Oficinas de gobierno",
+      "http://132.248.26.87:8080/geoserver/wms", {
+        layers: "topp:oficinas_gobierno", 
+        transparent: "true", 
+        format: "image/png" }, {isBaseLayer: false, visibility: false}
+        );	  
     
    /* Pinta las capas del mapa*/
-    map.addLayers([gpm,gsm,gsat,glim,estados,vegetacion,precipitacion,localidadurbana,traza,bancos,vector]);
+    map.addLayers([gpm,gsm,gsat,glim,traza,oficinas_gobierno,museos,mercados,iglesias,guarderias_issste,gasolinerias,carburante,culturales,aurrera,antroseg09,antroseg08,issste,imss,conalep,cetis,cendis,cam,caic,bancos,vector]);
 
    /* Fin  de inicio de capas*/ 
   
