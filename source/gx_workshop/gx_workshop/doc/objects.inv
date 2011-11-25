@@ -1,0 +1,6 @@
+# Sphinx inventory version 1
+# Project: Developing OGC Compliant Web Applications with GeoExt
+# Version: 1.1
+geoext.stores mod stores/index.html
+geoext.basics mod basics/index.html
+geoext.wfs mod wfs/index.html

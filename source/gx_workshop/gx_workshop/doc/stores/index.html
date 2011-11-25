@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. WMS and the GeoExt LayerStore &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="next" title="2.1. Creating a Grid View of WMS Capabilities" href="capabilities.html" />
+    <link rel="prev" title="1.3. GeoExt Resources" href="../basics/resources.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../basics/resources.html"
+                                  title="previous chapter">1.3. GeoExt Resources</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="capabilities.html"
+                                  title="next chapter">2.1. Creating a Grid View of WMS Capabilities</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="wms-and-the-geoext-layerstore">
+<span id="geoext-stores"></span><span id="module-geoext.stores"></span><h1>2. WMS and the GeoExt LayerStore<a class="headerlink" href="#wms-and-the-geoext-layerstore" title="Permalink to this headline">¶</a></h1>
+<p>In GeoExt, map layers, features of vector layers and even the zoom levels
+of a map are accessible like any remote Ext JS data source. Read by an
+<a class="reference external" href="http://www.extjs.com/deploy/dev/docs/?class=Ext.data.DataReader">Ext.data.DataReader</a>,
+data records are made available to an <a class="reference external" href="http://www.extjs.com/deploy/dev/docs/?class=Ext.data.Store">Ext.data.Store</a>. Depending on
+the Reader used, not only OpenLayers objects, but also remote OGC services
+can be accessed.</p>
+<p>This module introduces GeoExt&#8217;s WMSCapabilitiesStore, and shows how it can
+easily be used to populate grids and trees. You will create a grid view of
+layers from a WMS GetCapabilities request, add a tree view to manage the map
+panel&#8217;s layers, add a legend using WMS GetLegendGraphic, and explore map
+features with a WMS GetFeatureInfo popup.</p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="capabilities.html">2.1. Create a grid view of layers from a WMS GetCapabilities request,</a></li>
+<li class="toctree-l1"><a class="reference external" href="tree.html">2.2. Add a tree view to manage the map panel&#8217;s layers,</a></li>
+<li class="toctree-l1"><a class="reference external" href="legend.html">2.3. Add a legend using WMS GetLegendGraphic,</a></li>
+<li class="toctree-l1"><a class="reference external" href="getfeatureinfo.html">2.4. Explore map features with a WMS GetFeatureInfo popup,</a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="capabilities.html" title="2.1. Creating a Grid View of WMS Capabilities"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="../basics/resources.html" title="1.3. GeoExt Resources"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+        <li><a href="#">2. WMS and the GeoExt LayerStore</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

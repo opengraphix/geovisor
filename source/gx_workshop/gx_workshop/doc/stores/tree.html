@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.2. Adding a Tree View to Manage the Map Panel’s Layers &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="up" title="2. WMS and the GeoExt LayerStore" href="index.html" />
+    <link rel="next" title="2.3. Adding a Legend Using WMS GetLegendGraphic" href="legend.html" />
+    <link rel="prev" title="2.1. Creating a Grid View of WMS Capabilities" href="capabilities.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">2.2. Adding a Tree View to Manage the Map Panel&#8217;s Layers</a><ul>
+<li><a class="reference external" href="#using-a-tree-panel-for-layer-management">2.2.1. Using a Tree Panel for Layer Management</a><ul>
+<li><a class="reference external" href="#looking-at-the-new-code-more-closely">2.2.1.1. Looking at the New Code More Closely</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#next-steps">2.2.2. Next Steps</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="capabilities.html"
+                                  title="previous chapter">2.1. Creating a Grid View of WMS Capabilities</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="legend.html"
+                                  title="next chapter">2.3. Adding a Legend Using WMS GetLegendGraphic</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="adding-a-tree-view-to-manage-the-map-panel-s-layers">
+<span id="geoext-stores-tree"></span><h1>2.2. Adding a Tree View to Manage the Map Panel&#8217;s Layers<a class="headerlink" href="#adding-a-tree-view-to-manage-the-map-panel-s-layers" title="Permalink to this headline">¶</a></h1>
+<p>With the <a class="reference external" href="http://dev.sencha.com/deploy/dev/docs/docs/?class=Ext.tree.TreePanel">Ext.tree.TreePanel</a> and its
+tree nodes, Ext JS provides a powerful tool to work with hierarchical
+information. While Ext JS trees cannot be populated from stores, GeoExt
+provides a tree loader that can turn information from a layer store into tree
+nodes. Configured with checkboxes, these can be used to turn layers on and
+off. In addition, thanks to drag &amp; drop support of Ext JS trees, layers can
+easily be reordered.</p>
+<div class="section" id="using-a-tree-panel-for-layer-management">
+<h2>2.2.1. Using a Tree Panel for Layer Management<a class="headerlink" href="#using-a-tree-panel-for-layer-management" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s add a tree to the example from the <a class="reference external" href="capabilities.html#geoext-stores-capabilities"><em>previous</em></a>
+section. To do so, we create a tree panel with a <a class="reference external" href="http://geoext.org/lib/GeoExt/widgets/tree/LayerContainer.html">GeoExt.tree.LayerContainer</a>, and add it
+as new item to our application&#8217;s main panel.</p>
+<p class="rubric">Tasks</p>
+<ol class="arabic">
+<li><p class="first">If you don&#8217;t have it open already, open <tt class="docutils literal"><span class="pre">map.html</span></tt> from the previous
+example in a text editor. Add the following tree definition at the end of
+our application&#8217;s script block:</p>
+<div class="highlight-javascript" id="geoext-stores-tree-treepanel"><div class="highlight"><pre><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;treepanel&quot;</span><span class="p">,</span>
+    <span class="nx">ref</span><span class="o">:</span> <span class="s2">&quot;tree&quot;</span><span class="p">,</span>
+    <span class="nx">region</span><span class="o">:</span> <span class="s2">&quot;west&quot;</span><span class="p">,</span>
+    <span class="nx">width</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nx">autoScroll</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">enableDD</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">root</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">tree</span><span class="p">.</span><span class="nx">LayerContainer</span><span class="p">({</span>
+        <span class="nx">expanded</span><span class="o">:</span> <span class="kc">true</span>
+    <span class="p">}),</span>
+    <span class="nx">bbar</span><span class="o">:</span> <span class="p">[{</span>
+        <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;Remove from Map&quot;</span><span class="p">,</span>
+        <span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">node</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">tree</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">getSelectedNode</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">node</span> <span class="o">&amp;&amp;</span> <span class="nx">node</span><span class="p">.</span><span class="nx">layer</span> <span class="k">instanceof</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Layer</span><span class="p">.</span><span class="nx">WMS</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">removeLayer</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">layer</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Reload <a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a> in your browser to see the changes.
+On the left-hand side of the map, we have a tree now. Add some layers from
+the grid to the map and watch them also appear in the tree. Use the
+checkboxes to turn layers on and off. Drag and drop layers in the
+tree to change their order on the map. Select a layer by clicking on the
+node text, and remove it by clicking the &#8220;Remove from Map&#8221; button.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="../_images/tree.png" src="../_images/tree.png" />
+<p class="caption">A tree view of the map&#8217;s layers for convenient layer management</p>
+</div>
+<div class="section" id="looking-at-the-new-code-more-closely">
+<h3>2.2.1.1. Looking at the New Code More Closely<a class="headerlink" href="#looking-at-the-new-code-more-closely" title="Permalink to this headline">¶</a></h3>
+<p>First, let&#8217;s have a look at the <a class="reference internal" href="#geoext-stores-tree-treepanel"><em>tree configuration</em></a> again to see what it consists of.</p>
+<p>As we already saw, we can drag and drop tree nodes. This is enabled by
+setting <tt class="docutils literal"><span class="pre">enableDD:&nbsp;true</span></tt>. More interesting is the <tt class="docutils literal"><span class="pre">root</span></tt> property.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">root</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">tree</span><span class="p">.</span><span class="nx">LayerContainer</span><span class="p">({</span>
+    <span class="nx">expanded</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">}),</span>
+</pre></div>
+</div>
+<p>Every tree needs to have a root node. GeoExt provides a special layer
+container node type. Configured with the map panel&#8217;s layer store as its
+<tt class="docutils literal"><span class="pre">layerStore</span></tt> config option, it will be populated with layer nodes for each of
+the map&#8217;s layers. Note that we omitted the <tt class="docutils literal"><span class="pre">layerStore</span></tt> config option. The
+LayerContainer takes the <tt class="docutils literal"><span class="pre">layers</span></tt> property from the first MapPanel it finds
+in the Ext JS registry in this case.</p>
+<p>The nodes the LayerContainer is populated with are <a class="reference external" href="http://geoext.org/lib/GeoExt/widgets/tree/LayerNode.html">GeoExt.tree.LayerNode</a> instances.
+The container makes sure that the list of layers is always synchronized
+with the map, and the node&#8217;s checkbox controls the layer&#8217;s visibility.</p>
+<p>Surprisingly, adding a root node that has all map layers as children requires
+less coding effort than the button to remove layers:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">bbar</span><span class="o">:</span> <span class="p">[{</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;Remove from Map&quot;</span><span class="p">,</span>
+    <span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">node</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">tree</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">getSelectedNode</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">node</span> <span class="o">&amp;&amp;</span> <span class="nx">node</span><span class="p">.</span><span class="nx">layer</span> <span class="k">instanceof</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Layer</span><span class="p">.</span><span class="nx">WMS</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">removeLayer</span><span class="p">(</span><span class="nx">node</span><span class="p">.</span><span class="nx">layer</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}]</span>
+</pre></div>
+</div>
+<p>We already know the concept of a bottom toolbar from a <a class="reference external" href="capabilities.html#geoext-stores-capabilities-bbar"><em>previous exercise</em></a>. The flesh of the above snippet is the handler
+function that gets executed when the button is clicked. Like the grid, the
+tree also has a selection model. The default selection model only supports
+selection of one node at a time, and we can get the selected node using its
+<tt class="docutils literal"><span class="pre">getSelectedNode()</span></tt> method. All that is left to do is check if there is a
+selected node, and if the layer is a WMS layer (we don&#8217;t want to allow removal
+of vector or other layers we might be adding manually), and remove the layer
+from the map using the <tt class="docutils literal"><span class="pre">removeLayer()</span></tt> method of the <tt class="docutils literal"><span class="pre">OpenLayers.Map</span></tt>
+object.</p>
+</div>
+</div>
+<div class="section" id="next-steps">
+<h2>2.2.2. Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>Now that we can control the content of the map using a tree, we will want a
+<a class="reference external" href="legend.html#geoext-stores-legend"><em>legend</em></a> that explains the map content.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="legend.html" title="2.3. Adding a Legend Using WMS GetLegendGraphic"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="capabilities.html" title="2.1. Creating a Grid View of WMS Capabilities"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">2. WMS and the GeoExt LayerStore</a> &raquo;</li>
+        <li><a href="#">2.2. Adding a Tree View to Manage the Map Panel&#8217;s Layers</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

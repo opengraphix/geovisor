@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Map</title>
+        <link rel="stylesheet" href="js/OpenLayers-2.11/theme/default/style.css" type="text/css">
+        <style>
+		    #map-id {
+		        width: 958px;
+		        height: 600px;
+		    }
+		    .olControlAttribution {
+		        font-size: 10px;
+		        bottom: 5px;
+		        right: 5px;
+		    }
+		    .olControlScaleLine {
+			    background: white;
+			    padding: 10px;
+			}
+		    #scaleline-id {
+			    margin: 10px;
+			    font-size: xx-small;
+			}
+        </style>
+        <script src="js/OpenLayers-2.11/lib/OpenLayers.js"></script>
+    </head>
+      <body>
+        <h1>My Map</h1>
+        <div id="map-id"></div>
+        <div id="scaleline-id"></div>
+        <script>
+            var geographic = new OpenLayers.Projection("EPSG:4326");
+            var mercator = new OpenLayers.Projection("EPSG:900913");
+
+            var world = new OpenLayers.Bounds(-99.269, 19.121, -99.077, 19.313).transform(
+                geographic, mercator
+            );
+            var center = new OpenLayers.LonLat(-99.183056, 19.283056).transform(
+                geographic, mercator
+            );
+
+            var options = {
+                projection: mercator,
+                units: "m",
+                maxExtent: world
+            };
+            var map = new OpenLayers.Map("map-id", options);
+            // Se agrega la escala
+            var scaleline = new OpenLayers.Control.ScaleLine({
+			    div: document.getElementById("scaleline-id")
+			});
+			map.addControl(scaleline);
+
+            var osm = new OpenLayers.Layer.OSM();
+            map.addLayer(osm);
+
+            var bing = new OpenLayers.Layer.Bing({
+                key: "AqTGBsziZHIJYYxgivLBf0hVdrAk9mWO5cQcb8Yux8sW5M8c8opEC2lZqKR1ZZXf",
+                type: "Road",
+            });
+            map.addLayer(bing);
+
+            map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+            map.setCenter(center, 13);
+        </script>
+    </body>
+</html>

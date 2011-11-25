@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.3. Committing Feature Modifications Over WFS-T &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="up" title="3. WFS Made Easy with GeoExt" href="index.html" />
+    <link rel="prev" title="3.2. Editing Features and Their Attributes" href="editing.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">3.3. Committing Feature Modifications Over WFS-T</a><ul>
+<li><a class="reference external" href="#managing-feature-states">3.3.1. Managing Feature States</a><ul>
+<li><a class="reference external" href="#understanding-the-code">3.3.1.1. Understanding the Code</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#adding-a-save-button">3.3.2. Adding a Save Button</a><ul>
+<li><a class="reference external" href="#the-commit-callback-explained">3.3.2.1. The Commit Callback Explained</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#conclusion">3.3.3. Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="editing.html"
+                                  title="previous chapter">3.2. Editing Features and Their Attributes</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="committing-feature-modifications-over-wfs-t">
+<span id="geoext-wfs-wfst"></span><h1>3.3. Committing Feature Modifications Over WFS-T<a class="headerlink" href="#committing-feature-modifications-over-wfs-t" title="Permalink to this headline">¶</a></h1>
+<p>Until GeoExt also provides writers, we have to rely on OpenLayers for writing
+modifications back to the WFS. This is not a big problem though, because WFS-T
+support in OpenLayers is solid. But it requires us to take some extra care of
+feature states.</p>
+<div class="section" id="managing-feature-states">
+<h2>3.3.1. Managing Feature States<a class="headerlink" href="#managing-feature-states" title="Permalink to this headline">¶</a></h2>
+<p>For keeping track of &#8220;create&#8221;, &#8220;update&#8221; and &#8220;delete&#8221; operations, OpenLayers
+vector features have a <tt class="docutils literal"><span class="pre">state</span></tt> property. The WFS protocol relies on this
+property to determine which features to commit using an &#8220;Insert&#8221;, &#8220;Update&#8221; or
+&#8220;Delete&#8221; transaction. So we need to make sure that the <tt class="docutils literal"><span class="pre">state</span></tt> property gets
+set properly:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">OpenLayers.State.INSERT</span></tt> for features that were just created. We do not
+need to do anything here, because the DrawFeature control handles this for
+us.</li>
+<li><tt class="docutils literal"><span class="pre">OpenLayers.State.UPDATE</span></tt> for features with modified attributes, except
+for features that have <tt class="docutils literal"><span class="pre">OpenLayers.State.INSERT</span></tt> set already. For modified
+geometries, the ModifyFeature control handles this.</li>
+<li><tt class="docutils literal"><span class="pre">OpenLayers.State.DELETE</span></tt> for features that the user wants to delete,
+except for features that have <tt class="docutils literal"><span class="pre">OpenLayers.State.INSERT</span></tt> set, which can be
+removed.</li>
+</ul>
+<p class="rubric">Tasks</p>
+<ol class="arabic">
+<li><p class="first">Open <tt class="docutils literal"><span class="pre">map.html</span></tt> in your text editor. Find the &#8220;Delete&#8221; button&#8217;s
+handler and change it so it properly sets the DELETE feature state and
+re-adds features to the layer so the server knows we want to delete them:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">featureFilter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Filter</span><span class="p">({</span>
+        <span class="nx">evaluate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">feature</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nx">feature</span><span class="p">.</span><span class="nx">state</span> <span class="o">!=</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">State</span><span class="p">.</span><span class="nx">DELETE</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">rec</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">feature</span> <span class="o">=</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">getFeature</span><span class="p">();</span>
+        <span class="nx">modifyControl</span><span class="p">.</span><span class="nx">unselectFeature</span><span class="p">(</span><span class="nx">feature</span><span class="p">);</span>
+        <span class="nx">vectorLayer</span><span class="p">.</span><span class="nx">removeFeatures</span><span class="p">([</span><span class="nx">feature</span><span class="p">]);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">feature</span><span class="p">.</span><span class="nx">state</span> <span class="o">!=</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">State</span><span class="p">.</span><span class="nx">INSERT</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">feature</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">State</span><span class="p">.</span><span class="nx">DELETE</span><span class="p">;</span>
+            <span class="nx">vectorLayer</span><span class="p">.</span><span class="nx">addFeatures</span><span class="p">([</span><span class="nx">feature</span><span class="p">]);</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="understanding-the-code">
+<h3>3.3.1.1. Understanding the Code<a class="headerlink" href="#understanding-the-code" title="Permalink to this headline">¶</a></h3>
+<p>By setting the <tt class="docutils literal"><span class="pre">featureFilter</span></tt> on the store we prevent the feature from being
+re-added to the store. In OpenLayers, features with DELETE state won&#8217;t be
+rendered, but in Ext JS, if we do not want a deleted feature to show up in the
+grid, we have to make sure that it is not in the store.</p>
+<p>Also note that after removing the deleted feature from the <tt class="docutils literal"><span class="pre">vectorLayer</span></tt>,
+we add it again unless it has an INSERT state (but it won&#8217;t show up because
+of OpenLayers state handling and the <tt class="docutils literal"><span class="pre">featureFilter</span></tt>). This is necessary
+because the transaction when saving changes needs to submit information about
+deleted features, so they can be deleted on the server.</p>
+</div>
+</div>
+<div class="section" id="adding-a-save-button">
+<h2>3.3.2. Adding a Save Button<a class="headerlink" href="#adding-a-save-button" title="Permalink to this headline">¶</a></h2>
+<p>Saving feature modifications the OpenLayers way usually requires the vector
+layer to be configured with an <a class="reference external" href="http://dev.openlayers.org/releases/OpenLayers-2.10/doc/apidocs/files/OpenLayers/Strategy/Save-js.html">OpenLayers.Strategy.Save</a>.
+But since we have a GeoExt store (and not an OpenLayers layer) configured with
+the WFS protocol here, we cannot do that. Instead, we can call the protocol&#8217;s
+<tt class="docutils literal"><span class="pre">commit()</span></tt> method directly to save changes.</p>
+<p class="rubric">Tasks</p>
+<ol class="arabic">
+<li><p class="first">Find the definition of the grid toolbar&#8217;s Delete and Create buttons in your
+<tt class="docutils literal"><span class="pre">map.html</span></tt> file and add the &#8220;Save&#8221; button configuration and handler.
+When done, the whole buttons definition should look like this:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">bbar</span><span class="p">.</span><span class="nx">add</span><span class="p">([{</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;Delete&quot;</span><span class="p">,</span>
+    <span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">featureFilter</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Filter</span><span class="p">({</span>
+            <span class="nx">evaluate</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">feature</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">feature</span><span class="p">.</span><span class="nx">state</span> <span class="o">!=</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">State</span><span class="p">.</span><span class="nx">DELETE</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">rec</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">feature</span> <span class="o">=</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">getFeature</span><span class="p">();</span>
+            <span class="nx">modifyControl</span><span class="p">.</span><span class="nx">unselectFeature</span><span class="p">(</span><span class="nx">feature</span><span class="p">);</span>
+            <span class="nx">vectorLayer</span><span class="p">.</span><span class="nx">removeFeatures</span><span class="p">([</span><span class="nx">feature</span><span class="p">]);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">feature</span><span class="p">.</span><span class="nx">state</span> <span class="o">!=</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">State</span><span class="p">.</span><span class="nx">INSERT</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">feature</span><span class="p">.</span><span class="nx">state</span> <span class="o">=</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">State</span><span class="p">.</span><span class="nx">DELETE</span><span class="p">;</span>
+                <span class="nx">vectorLayer</span><span class="p">.</span><span class="nx">addFeatures</span><span class="p">([</span><span class="nx">feature</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">},</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">Action</span><span class="p">({</span>
+    <span class="nx">control</span><span class="o">:</span> <span class="nx">drawControl</span><span class="p">,</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;Create&quot;</span><span class="p">,</span>
+    <span class="nx">enableToggle</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">}),</span> <span class="p">{</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;Save&quot;</span><span class="p">,</span>
+    <span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">proxy</span><span class="p">.</span><span class="nx">protocol</span><span class="p">.</span><span class="nx">commit</span><span class="p">(</span>
+            <span class="nx">vectorLayer</span><span class="p">.</span><span class="nx">features</span><span class="p">,</span> <span class="p">{</span>
+                <span class="nx">callback</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">layers</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">layers</span><span class="p">;</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="nx">layers</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span> <span class="o">--</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">redraw</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+                    <span class="p">}</span>
+                    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+                <span class="p">}</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">}]);</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Save your file and reload <a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a>. Make some
+changes and hit &#8220;Save&#8221;. Reload the page to see that your changes were
+persisted.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="../_images/wfst.png" src="../_images/wfst.png" />
+<p class="caption">Application with &#8220;Save&#8221; button and a persisted feature after reloading.</p>
+</div>
+<div class="section" id="the-commit-callback-explained">
+<h3>3.3.2.1. The Commit Callback Explained<a class="headerlink" href="#the-commit-callback-explained" title="Permalink to this headline">¶</a></h3>
+<p>By calling the <tt class="docutils literal"><span class="pre">commit()</span></tt> method with a callback option, we can perform
+actions when the commit operation has completed. In this case, we want to
+redraw all layers to reflect the changes in WMS and group layers. And we also
+reload the feature store, to reset all feature states and have all features
+with their correct feature ids.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">callback</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="nx">layers</span><span class="p">.</span><span class="nx">length</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="nx">i</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">;</span> <span class="o">--</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">redraw</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">reload</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that reloading the store is only necessary for GeoServer layers that
+use a shapefile as data store, because the WFS Insert doesn&#8217;t report the
+inserted feature ids for those.</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>3.3.3. Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>You have successfully created a WFS based feature editor. GeoExt makes working
+with features easy, thanks to its FeatureStore. Although there is no write
+support yet for the FeatureStore in GeoExt, saving changes via WFS-T is easy
+because of the solid WFS-T support in OpenLayers and the interoperability
+between GeoExt and OpenLayers.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="editing.html" title="3.2. Editing Features and Their Attributes"
+                 accesskey="P">previous</a></li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">3. WFS Made Easy with GeoExt</a> &raquo;</li>
+        <li><a href="#">3.3. Committing Feature Modifications Over WFS-T</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

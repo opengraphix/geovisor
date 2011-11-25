@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3.1. Creating a Synchronized Grid and Map View of WFS Features &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="up" title="3. WFS Made Easy with GeoExt" href="index.html" />
+    <link rel="next" title="3.2. Editing Features and Their Attributes" href="editing.html" />
+    <link rel="prev" title="3. WFS Made Easy with GeoExt" href="index.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">3.1. Creating a Synchronized Grid and Map View of WFS Features</a><ul>
+<li><a class="reference external" href="#vector-features-on-a-map-and-in-a-table">3.1.1. Vector Features on a Map and in a Table</a><ul>
+<li><a class="reference external" href="#understanding-the-code">3.1.1.1. Understanding the Code</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#next-steps">3.1.2. Next Steps</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">3. WFS Made Easy with GeoExt</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="editing.html"
+                                  title="next chapter">3.2. Editing Features and Their Attributes</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="creating-a-synchronized-grid-and-map-view-of-wfs-features">
+<span id="geoext-wfs-grid"></span><h1>3.1. Creating a Synchronized Grid and Map View of WFS Features<a class="headerlink" href="#creating-a-synchronized-grid-and-map-view-of-wfs-features" title="Permalink to this headline">¶</a></h1>
+<p>GeoExt borrows most of its WFS support from OpenLayers. What it does provide
+though is the <a class="reference external" href="http://geoext.org/lib/GeoExt/data/FeatureStore.html">GeoExt.data.FeatureStore</a>, so showing feature
+attributes in a grid is a very easy task. If we just want to display features
+in a grid, we can use a <a class="reference external" href="http://geoext.org/lib/GeoExt/data/ProtocolProxy.html">GeoExt.data.ProtocolProxy</a>, so we don&#8217;t even
+need an OpenLayers layer.</p>
+<div class="section" id="vector-features-on-a-map-and-in-a-table">
+<h2>3.1.1. Vector Features on a Map and in a Table<a class="headerlink" href="#vector-features-on-a-map-and-in-a-table" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s build editing functionality into the WMS browser from the
+<a class="reference external" href="../stores/index.html#geoext-stores"><em>previous chapter</em></a>. But one piece at a time. Let&#8217;s start
+with an <a class="reference external" href="http://dev.openlayers.org/releases/OpenLayers-2.10/doc/apidocs/files/OpenLayers/Layer/Vector-js.html">OpenLayers.Layer.Vector</a>
+for the geometries and a grid for the attributes of the WFS layer.</p>
+<p>We&#8217;ll start
+with some code that reads a WFS layer, displays its features on a map, shows
+the attributes in a grid, and synchronizes feature selection between map and
+grid:</p>
+<p class="rubric">Tasks</p>
+<ol class="arabic">
+<li><p class="first">Open the <tt class="docutils literal"><span class="pre">map.html</span></tt> file from the previous exercise in a text editor.
+Paste the code below at the bottom of the application&#8217;s script block:</p>
+<div class="highlight-javascript" id="geoext-wfs-grid-grid"><div class="highlight"><pre><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;grid&quot;</span><span class="p">,</span>
+    <span class="nx">ref</span><span class="o">:</span> <span class="s2">&quot;featureGrid&quot;</span><span class="p">,</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Feature Table&quot;</span><span class="p">,</span>
+    <span class="nx">region</span><span class="o">:</span> <span class="s2">&quot;south&quot;</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="nx">sm</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">FeatureSelectionModel</span><span class="p">(),</span>
+    <span class="nx">store</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Store</span><span class="p">(),</span>
+    <span class="nx">columns</span><span class="o">:</span> <span class="p">[],</span>
+    <span class="nx">bbar</span><span class="o">:</span> <span class="p">[]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The above does not do much. It just creates an empty grid in the &#8220;south&#8221;
+region of the application viewport, and prepares a selection model (<tt class="docutils literal"><span class="pre">sm</span></tt>)
+that we will use later for synchronizing map and grid selection. Now let&#8217;s
+populate the grid with features from the medford:parks layer. To do so, we
+change the store and the columns in the above grid definition, and make it
+look like this:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;grid&quot;</span><span class="p">,</span>
+    <span class="nx">ref</span><span class="o">:</span> <span class="s2">&quot;featureGrid&quot;</span><span class="p">,</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Feature Table&quot;</span><span class="p">,</span>
+    <span class="nx">region</span><span class="o">:</span> <span class="s2">&quot;south&quot;</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="nx">sm</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">FeatureSelectionModel</span><span class="p">(),</span>
+    <span class="nx">store</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">FeatureStore</span><span class="p">({</span>
+        <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;agency&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;parktype&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;number_fac&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;int&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;area&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;float&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="nx">name</span><span class="o">:</span> <span class="s2">&quot;len&quot;</span><span class="p">,</span> <span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;float&quot;</span><span class="p">}</span>
+        <span class="p">],</span>
+        <span class="nx">proxy</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">ProtocolProxy</span><span class="p">({</span>
+            <span class="nx">protocol</span><span class="o">:</span> <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">.</span><span class="nx">WFS</span><span class="p">({</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/geoserver/ows&quot;</span><span class="p">,</span>
+                <span class="nx">version</span><span class="o">:</span> <span class="s2">&quot;1.1.0&quot;</span><span class="p">,</span>
+                <span class="nx">featureType</span><span class="o">:</span> <span class="s2">&quot;parks&quot;</span><span class="p">,</span>
+                <span class="nx">featureNS</span><span class="o">:</span> <span class="s2">&quot;http://medford.opengeo.org&quot;</span><span class="p">,</span>
+                <span class="nx">srsName</span><span class="o">:</span> <span class="s2">&quot;EPSG:4326&quot;</span>
+            <span class="p">})</span>
+        <span class="p">}),</span>
+        <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span>
+    <span class="p">}),</span>
+    <span class="nx">columns</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;owner&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;agency&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;agency&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;name&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;usage&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;parktype&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;parktype&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;numbercolumn&quot;</span><span class="p">,</span> <span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;number_fac&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;number_fac&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;numbercolumn&quot;</span><span class="p">,</span> <span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;area&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;area&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;numbercolumn&quot;</span><span class="p">,</span> <span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;len&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;len&quot;</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nx">bbar</span><span class="o">:</span> <span class="p">[]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">To make this complete, let&#8217;s also display the geometries on the map, by
+adding a vector layer. Just append the following snippet at the bottom of
+the application code:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">vectorLayer</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Layer</span><span class="p">.</span><span class="nx">Vector</span><span class="p">(</span><span class="s2">&quot;Editable features&quot;</span><span class="p">);</span>
+<span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">addLayer</span><span class="p">(</span><span class="nx">vectorLayer</span><span class="p">);</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">vectorLayer</span><span class="p">);</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">bind</span><span class="p">(</span><span class="nx">vectorLayer</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">After saving your changes, point your browser to
+<a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a>. You should see a new grid in the application,
+and geometries rendered on the map in orange. When clicking a row in the
+grid, its geometry gets highlighted on the map. And when clicking a feature
+on a map, its attributes will be highlighted in the grid.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="../_images/grid.png" src="../_images/grid.png" />
+<p class="caption">A synchronized map and grid view of WFS features.</p>
+</div>
+<div class="section" id="understanding-the-code">
+<h3>3.1.1.1. Understanding the Code<a class="headerlink" href="#understanding-the-code" title="Permalink to this headline">¶</a></h3>
+<p>As we already know, we can configure a grid with a store to tell it where to
+get its data from. This time we use a <a class="reference external" href="http://geoext.org/lib/GeoExt/data/FeatureStore.html">GeoExt.data.FeatureStore</a> that we configure with
+a <a class="reference external" href="http://geoext.org/lib/GeoExt/data/ProtocolProxy.html">GeoExt.data.ProtocolProxy</a> to access an
+<a class="reference external" href="http://dev.openlayers.org/releases/OpenLayers-2.10/doc/apidocs/files/OpenLayers/Protocol/WFS/v1-js.html">OpenLayers.Protocol.WFS</a>.</p>
+<p>The synchronization of selections in the grid and on the map is provided by the
+<a class="reference external" href="http://geoext.org/lib/GeoExt/widgets/grid/FeatureSelectionModel.html">GeoExt.grid.FeatureSelectionModel</a>, which
+we use instead of the default selection model:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">sm</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">FeatureSelectionModel</span><span class="p">(),</span>
+</pre></div>
+</div>
+<p>When we add the vector layer to the map, we also have to bind the selection
+model and the store to it:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">vectorLayer</span><span class="p">);</span>
+<span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">bind</span><span class="p">(</span><span class="nx">vectorLayer</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Note that this is not necessary if the FeatureStore is configured with a
+<tt class="docutils literal"><span class="pre">layer</span></tt>. But since we create the store before the layer here, we don&#8217;t have
+access to it yet, so we bind it later.</p>
+<p class="rubric" id="geoext-wfs-grid-bonus">Bonus Task</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Dragons ahead! Understanding the code from this exercise will be hard for
+readers without solid programming background. Please skip this task unless</p>
+<ul class="last simple">
+<li>you are really, really willing to learn and spend an hour on this,</li>
+<li>not understanding code that you paste does not make you unhappy.</li>
+</ul>
+</div>
+<p>The need to manually configure a WFS layer with all the fields and columns
+makes the application less convenient than we want it to be. Ideally, we could
+select a layer in the tree, and the grid would automatically display its
+feature attributes, and the features could be selected in the grid and the map.</p>
+<p>Many WMS/WFS implementations, like GeoServer in our case, use the same layer
+(feature type) names for WMS and WFS. For other WMS implementations, there is
+a DescribeLayer request which returns an XML document that gives us the link
+from the WMS layer to an associated WFS feature type or WCS coverage. Once we
+know the WFS feature type name, we can issue a WFS DescribeFeatureType request
+to get the fields and data types for the feature attributes. The disadvantage
+of omitting the DescribeLayer request is that the DescribeFeatureType request
+will fail for raster layers. This is not a big deal though - in our
+implementation it only means that the grid and layer will be cleared when we
+select a raster layer.</p>
+<p>For this bonus exercise, we assume that the WMS layer name is the same as the
+WFS FeatureType name, so we don&#8217;t issue a WMS DescribeLayer request. But we do
+issue a WFS DescribeFeatureType to auto-configure the feature records and the
+grid.</p>
+<ol class="arabic">
+<li><p class="first">GeoExt has an <a class="reference external" href="http://geoext.org/lib/GeoExt/data/AttributeStore.html">AttributeStore</a> which holds the
+field metadata of the feature attributes. It uses
+<a class="reference external" href="http://dev.openlayers.org/releases/OpenLayers-2.10/doc/apidocs/files/OpenLayers/Format/WFSDescribeFeatureType-js.html">OpenLayers.Format.WFSDescribeFeatureType</a>
+to obtain this information, but discards anything but the field data. For
+accessing the WFS layer, we also need the feature namespace, so we
+intercept the read method to obtain all of the DescribeFeatureType
+response&#8217;s raw data. Let&#8217;s add the following at the end of our script
+block:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">rawAttributeData</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">read</span> <span class="o">=</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">WFSDescribeFeatureType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">read</span><span class="p">;</span>
+<span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Format</span><span class="p">.</span><span class="nx">WFSDescribeFeatureType</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">read</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">rawAttributeData</span> <span class="o">=</span> <span class="nx">read</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">rawAttributeData</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">The FeatureStore and the grid need to be reconfigured when we select a
+different layer in the tree. Append the following function to the
+application code:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">reconfigure</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nx">url</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">fields</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">columns</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">geometryName</span><span class="p">,</span> <span class="nx">geometryType</span><span class="p">;</span>
+    <span class="c1">// regular expression to detect the geometry column</span>
+    <span class="kd">var</span> <span class="nx">geomRegex</span> <span class="o">=</span> <span class="sr">/gml:(Multi)?(Point|Line|Polygon|Surface|Geometry).*/</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">types</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1">// mapping of xml schema data types to Ext JS data types</span>
+        <span class="s2">&quot;xsd:int&quot;</span><span class="o">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xsd:short&quot;</span><span class="o">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xsd:long&quot;</span><span class="o">:</span> <span class="s2">&quot;int&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xsd:string&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xsd:dateTime&quot;</span><span class="o">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xsd:double&quot;</span><span class="o">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;xsd:decimal&quot;</span><span class="o">:</span> <span class="s2">&quot;float&quot;</span><span class="p">,</span>
+        <span class="c1">// mapping of geometry types</span>
+        <span class="s2">&quot;Line&quot;</span><span class="o">:</span> <span class="s2">&quot;Path&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Surface&quot;</span><span class="o">:</span> <span class="s2">&quot;Polygon&quot;</span>
+    <span class="p">};</span>
+    <span class="nx">store</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">rec</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">type</span> <span class="o">=</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">name</span> <span class="o">=</span> <span class="nx">rec</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">);</span>
+        <span class="kd">var</span> <span class="nx">match</span> <span class="o">=</span> <span class="nx">geomRegex</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="nx">type</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">match</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// we found the geometry column</span>
+            <span class="nx">geometryName</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="c1">// we have an attribute column</span>
+            <span class="nx">fields</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+                <span class="nx">name</span><span class="o">:</span> <span class="nx">name</span><span class="p">,</span>
+                <span class="nx">type</span><span class="o">:</span> <span class="nx">types</span><span class="p">[</span><span class="nx">type</span><span class="p">]</span>
+            <span class="p">});</span>
+            <span class="nx">columns</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+                <span class="nx">xtype</span><span class="o">:</span> <span class="nx">types</span><span class="p">[</span><span class="nx">type</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span> <span class="o">?</span>
+                    <span class="s2">&quot;gridcolumn&quot;</span> <span class="o">:</span>
+                    <span class="s2">&quot;numbercolumn&quot;</span><span class="p">,</span>
+                <span class="nx">dataIndex</span><span class="o">:</span> <span class="nx">name</span><span class="p">,</span>
+                <span class="nx">header</span><span class="o">:</span> <span class="nx">name</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">reconfigure</span><span class="p">(</span><span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">FeatureStore</span><span class="p">({</span>
+        <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">proxy</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">ProtocolProxy</span><span class="p">({</span>
+            <span class="nx">protocol</span><span class="o">:</span> <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Protocol</span><span class="p">.</span><span class="nx">WFS</span><span class="p">({</span>
+                <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+                <span class="nx">version</span><span class="o">:</span> <span class="s2">&quot;1.1.0&quot;</span><span class="p">,</span>
+                <span class="nx">featureType</span><span class="o">:</span> <span class="nx">rawAttributeData</span><span class="p">.</span><span class="nx">featureTypes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">typeName</span><span class="p">,</span>
+                <span class="nx">featureNS</span><span class="o">:</span> <span class="nx">rawAttributeData</span><span class="p">.</span><span class="nx">targetNamespace</span><span class="p">,</span>
+                <span class="nx">srsName</span><span class="o">:</span> <span class="s2">&quot;EPSG:4326&quot;</span><span class="p">,</span>
+                <span class="nx">geometryName</span><span class="o">:</span> <span class="nx">geometryName</span><span class="p">,</span>
+                <span class="nx">maxFeatures</span><span class="o">:</span> <span class="mi">250</span>
+            <span class="p">})</span>
+        <span class="p">}),</span>
+        <span class="nx">fields</span><span class="o">:</span> <span class="nx">fields</span>
+    <span class="p">}),</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">ColumnModel</span><span class="p">(</span><span class="nx">columns</span><span class="p">));</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">store</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">vectorLayer</span><span class="p">);</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">bind</span><span class="p">(</span><span class="nx">vectorLayer</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Note that the way we build the <tt class="docutils literal"><span class="pre">fields</span></tt> and <tt class="docutils literal"><span class="pre">columns</span></tt> arrays results in
+exactly the same configuration for the medford:parks layer that we manually
+wrote in the previous exercise.</p>
+</li>
+<li><p class="first">When a layer is selected in the tree by clicking on its name, we want to
+issue a DescribeFeatureType request. This is done by appending the
+following code:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">setLayer</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">node</span> <span class="o">||</span> <span class="nx">node</span><span class="p">.</span><span class="nx">layer</span> <span class="k">instanceof</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Layer</span><span class="p">.</span><span class="nx">Vector</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nx">vectorLayer</span><span class="p">.</span><span class="nx">removeAllFeatures</span><span class="p">();</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">reconfigure</span><span class="p">(</span>
+        <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">Store</span><span class="p">(),</span>
+        <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">grid</span><span class="p">.</span><span class="nx">ColumnModel</span><span class="p">([])</span>
+    <span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">layer</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">layer</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">url</span> <span class="o">=</span> <span class="nx">layer</span><span class="p">.</span><span class="nx">url</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s2">&quot;?&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">];</span> <span class="c1">// the base url without params</span>
+    <span class="kd">var</span> <span class="nx">schema</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">AttributeStore</span><span class="p">({</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="nx">url</span><span class="p">,</span>
+        <span class="c1">// request specific params</span>
+        <span class="nx">baseParams</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;SERVICE&quot;</span><span class="o">:</span> <span class="s2">&quot;WFS&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;REQUEST&quot;</span><span class="o">:</span> <span class="s2">&quot;DescribeFeatureType&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;VERSION&quot;</span><span class="o">:</span> <span class="s2">&quot;1.1.0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;TYPENAME&quot;</span><span class="o">:</span> <span class="nx">layer</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">LAYERS</span>
+        <span class="p">},</span>
+        <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">listeners</span><span class="o">:</span> <span class="p">{</span>
+            <span class="s2">&quot;load&quot;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">store</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">app</span><span class="p">.</span><span class="nx">featureGrid</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="nx">layer</span><span class="p">.</span><span class="nx">name</span><span class="p">);</span>
+                <span class="nx">reconfigure</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nx">url</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">tree</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">on</span><span class="p">(</span>
+        <span class="s2">&quot;selectionchange&quot;</span><span class="p">,</span> <span class="nx">setLayer</span>
+    <span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Note that this code calls the <tt class="docutils literal"><span class="pre">reconfigure</span></tt> function in the store&#8217;s load
+handler. So when the user selects a layer in the tree, <tt class="docutils literal"><span class="pre">setLayer</span></tt> is
+called as <tt class="docutils literal"><span class="pre">selectionchange</span></tt> handler on the tree&#8217;s selection model, and
+the DescribeFeatureType request for the selected layer is issued. Once the
+response is available, <tt class="docutils literal"><span class="pre">reconfigure</span></tt> is called.</p>
+</li>
+<li><p class="first">After saving your changes, point your browser to
+<a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a>. When you have added a layer to the map that
+is available as WFS also and select it in the tree, the grid will be
+populated with the layer&#8217;s feature attributes, and the features will be
+rendered on the map.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="next-steps">
+<h2>3.1.2. Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>Just displaying vector features is somewhat boring. We want to edit them. The
+<a class="reference external" href="editing.html#geoext-wfs-editing"><em>next section</em></a> explains how to do that.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="editing.html" title="3.2. Editing Features and Their Attributes"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="index.html" title="3. WFS Made Easy with GeoExt"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">3. WFS Made Easy with GeoExt</a> &raquo;</li>
+        <li><a href="#">3.1. Creating a Synchronized Grid and Map View of WFS Features</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

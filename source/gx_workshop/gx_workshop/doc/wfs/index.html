@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>3. WFS Made Easy with GeoExt &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="next" title="3.1. Creating a Synchronized Grid and Map View of WFS Features" href="grid.html" />
+    <link rel="prev" title="2.4. Explore Map Features with a WMS GetFeatureInfo Popup" href="../stores/getfeatureinfo.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="../stores/getfeatureinfo.html"
+                                  title="previous chapter">2.4. Explore Map Features with a WMS GetFeatureInfo Popup</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="grid.html"
+                                  title="next chapter">3.1. Creating a Synchronized Grid and Map View of WFS Features</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="wfs-made-easy-with-geoext">
+<span id="geoext-wfs"></span><span id="module-geoext.wfs"></span><h1>3. WFS Made Easy with GeoExt<a class="headerlink" href="#wfs-made-easy-with-geoext" title="Permalink to this headline">¶</a></h1>
+<p>GeoExt provides access to remote WFS data via Stores and Readers, using the
+same mechanisms that Ext JS provides for any remote data access. Because the
+<a class="reference external" href="http://geoext.org/lib/GeoExt/data/FeatureStore.html">GeoExt.data.FeatureStore</a> can synchronize its
+records with an OpenLayers vector layer, working with vector features from
+WFS is extremely effortless.</p>
+<p>Users familiar with desktop based GIS
+applications expect to have a combined map and table (grid) view of geospatial
+data. GeoExt brings this feature to the web. At the end of this module, you
+will have built a simple WFS feature editor. The grid view comes for free
+because Ext JS can display data from any store in a grid, and the synchronized
+selection between map and table is also handled by GeoExt. Rendering
+the data on the map, editing and committing changes over WFS-T is provided by
+OpenLayers.</p>
+<p>GeoExt&#8217;s FeatureReader is not limited to WFS protocol and GML &#8211; other
+protocols (e.g. plain HTTP) with formats like KML, GeoRSS or GeoJSON work as
+well.</p>
+<p>In this module, you will:</p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="grid.html">3.1. Create a synchronized grid and map view of WFS features,</a></li>
+<li class="toctree-l1"><a class="reference external" href="editing.html">3.2. Make features editable,</a></li>
+<li class="toctree-l1"><a class="reference external" href="wfst.html">3.3. Save modifications over WFS-T.</a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="grid.html" title="3.1. Creating a Synchronized Grid and Map View of WFS Features"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="../stores/getfeatureinfo.html" title="2.4. Explore Map Features with a WMS GetFeatureInfo Popup"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+        <li><a href="#">3. WFS Made Easy with GeoExt</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

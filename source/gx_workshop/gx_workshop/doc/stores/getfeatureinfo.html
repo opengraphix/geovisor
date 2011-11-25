@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.4. Explore Map Features with a WMS GetFeatureInfo Popup &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="up" title="2. WMS and the GeoExt LayerStore" href="index.html" />
+    <link rel="next" title="3. WFS Made Easy with GeoExt" href="../wfs/index.html" />
+    <link rel="prev" title="2.3. Adding a Legend Using WMS GetLegendGraphic" href="legend.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">2.4. Explore Map Features with a WMS GetFeatureInfo Popup</a><ul>
+<li><a class="reference external" href="#the-openlayers-wmsgetfeatureinfo-control-and-geoext-popups">2.4.1. The OpenLayers WMSGetFeatureInfo control and GeoExt Popups</a></li>
+<li><a class="reference external" href="#conclusion">2.4.2. Conclusion</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="legend.html"
+                                  title="previous chapter">2.3. Adding a Legend Using WMS GetLegendGraphic</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="../wfs/index.html"
+                                  title="next chapter">3. WFS Made Easy with GeoExt</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="explore-map-features-with-a-wms-getfeatureinfo-popup">
+<span id="geoext-stores-getfeatureinfo"></span><h1>2.4. Explore Map Features with a WMS GetFeatureInfo Popup<a class="headerlink" href="#explore-map-features-with-a-wms-getfeatureinfo-popup" title="Permalink to this headline">¶</a></h1>
+<p>With GetFeatureInfo, WMS provides an easy way to query a map for feature info.
+Using OpenLayers and GeoExt makes it easy to access this information from
+within our application</p>
+<div class="section" id="the-openlayers-wmsgetfeatureinfo-control-and-geoext-popups">
+<h2>2.4.1. The OpenLayers WMSGetFeatureInfo control and GeoExt Popups<a class="headerlink" href="#the-openlayers-wmsgetfeatureinfo-control-and-geoext-popups" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s get familiar with <a class="reference external" href="http://dev.openlayers.org/releases/OpenLayers-2.10/doc/apidocs/files/OpenLayers/Control/WMSGetFeatureInfo-js.html">OpenLayers.Control.WMSGetFeatureInfo</a>
+control and
+<a class="reference external" href="http://geoext.org/lib/GeoExt/widgets/Popup.html">GeoExt.Popup</a>. Also, the
+<a class="reference external" href="http://dev.sencha.com/deploy/dev/docs/?class=Ext.grid.PropertyGrid">Ext.grid.PropertyGrid</a>
+will be useful to display the feature info in a nice grid - without the need to
+create another store manually.</p>
+<p class="rubric">Tasks</p>
+<ol class="arabic">
+<li><p class="first">For the popup, we need to include a CSS file in our document&#8217;s head,
+which provides the styles for the popup&#8217;s anchor:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;geoext/resources/css/popup.css&quot;</span><span class="nt">&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">GeoExt provides a CSS file which contains all styles that its
+widgets might require. So if you want to avoid having to worry about
+required CSS resources, you can include <tt class="docutils literal"><span class="pre">geoext-all.css</span></tt> (or
+<tt class="docutils literal"><span class="pre">geoext-all-debug.css</span></tt> for the developer version we are using
+here) instead of <tt class="docutils literal"><span class="pre">popup.css</span></tt>.</p>
+</div>
+</li>
+<li><p class="first">Now we can create the control. The code below should be added at the end
+of the application&#8217;s script block:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">controls</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Control</span><span class="p">.</span><span class="nx">WMSGetFeatureInfo</span><span class="p">({</span>
+    <span class="nx">autoActivate</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">infoFormat</span><span class="o">:</span> <span class="s2">&quot;application/vnd.ogc.gml&quot;</span><span class="p">,</span>
+    <span class="nx">maxFeatures</span><span class="o">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="nx">eventListeners</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s2">&quot;getfeatureinfo&quot;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[];</span>
+            <span class="nx">Ext</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">features</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">feature</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+                    <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;propertygrid&quot;</span><span class="p">,</span>
+                    <span class="nx">title</span><span class="o">:</span> <span class="nx">feature</span><span class="p">.</span><span class="nx">fid</span><span class="p">,</span>
+                    <span class="nx">source</span><span class="o">:</span> <span class="nx">feature</span><span class="p">.</span><span class="nx">attributes</span>
+                <span class="p">});</span>
+            <span class="p">});</span>
+            <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">Popup</span><span class="p">({</span>
+                <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Feature Info&quot;</span><span class="p">,</span>
+                <span class="nx">width</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+                <span class="nx">height</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+                <span class="nx">layout</span><span class="o">:</span> <span class="s2">&quot;accordion&quot;</span><span class="p">,</span>
+                <span class="nx">map</span><span class="o">:</span> <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">,</span>
+                <span class="nx">location</span><span class="o">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">xy</span><span class="p">,</span>
+                <span class="nx">items</span><span class="o">:</span> <span class="nx">items</span>
+            <span class="p">}).</span><span class="nx">show</span><span class="p">();</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}));</span>
+</pre></div>
+</div>
+<p>Now let&#8217;s examine the code we just added a bit.</p>
+<p>Note the <tt class="docutils literal"><span class="pre">eventListeners</span></tt> config option for the WMSGetFeatureInfo control.
+We listen to the &#8220;getfeatureinfo&#8221; event, which is fired every time we get
+back feature information from the WMS. For each feature that we get back,
+we create a property grid:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">Ext</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">features</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">feature</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+        <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;propertygrid&quot;</span><span class="p">,</span>
+        <span class="nx">title</span><span class="o">:</span> <span class="nx">feature</span><span class="p">.</span><span class="nx">fid</span><span class="p">,</span>
+        <span class="nx">source</span><span class="o">:</span> <span class="nx">feature</span><span class="p">.</span><span class="nx">attributes</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>The PropertyGrid is a very convenient component for a WMSGetFeatureInfo
+control configured with an <tt class="docutils literal"><span class="pre">infoFormat</span></tt> that returns something we can
+parse (i.e. not plain text or html). We do not need to configure this
+component with a store (like we did for the WMSCapabilities grid), we just
+pass it an arbitrary object (the attributes of a feature here) as
+<tt class="docutils literal"><span class="pre">source</span></tt> config option, and it will create a store internally and
+populate the grid with its data.</p>
+<p>We can easily put a popup on the map and anchor it to the position we
+clicked on the map:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">Popup</span><span class="p">({</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Feature Info&quot;</span><span class="p">,</span>
+    <span class="nx">width</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nx">layout</span><span class="o">:</span> <span class="s2">&quot;accordion&quot;</span><span class="p">,</span>
+    <span class="nx">map</span><span class="o">:</span> <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">,</span>
+    <span class="nx">location</span><span class="o">:</span> <span class="nx">e</span><span class="p">.</span><span class="nx">xy</span><span class="p">,</span>
+    <span class="nx">items</span><span class="o">:</span> <span class="nx">items</span>
+<span class="p">}).</span><span class="nx">show</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>With the <tt class="docutils literal"><span class="pre">location</span></tt> config option, we anchor the popup to the position
+where the click occurred (<tt class="docutils literal"><span class="pre">e.xy</span></tt>). We give it an &#8220;accordion&#8221; layout, and
+the items are the property grids we created above.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="../_images/popup.png" src="../_images/popup.png" />
+<p class="caption">Map with a popup populated from WMS GetFeatureInfo</p>
+</div>
+</div>
+<div class="section" id="conclusion">
+<h2>2.4.2. Conclusion<a class="headerlink" href="#conclusion" title="Permalink to this headline">¶</a></h2>
+<p>You have successfully created a WMS browser application! The whole application
+has about 120 lines of code. Not much when you consider how many features
+we were able to pack into it. And it wasn&#8217;t that hard to develop, was it?</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="../wfs/index.html" title="3. WFS Made Easy with GeoExt"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="legend.html" title="2.3. Adding a Legend Using WMS GetLegendGraphic"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">2. WMS and the GeoExt LayerStore</a> &raquo;</li>
+        <li><a href="#">2.4. Explore Map Features with a WMS GetFeatureInfo Popup</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

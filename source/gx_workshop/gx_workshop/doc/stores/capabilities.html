@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.1. Creating a Grid View of WMS Capabilities &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="up" title="2. WMS and the GeoExt LayerStore" href="index.html" />
+    <link rel="next" title="2.2. Adding a Tree View to Manage the Map Panel’s Layers" href="tree.html" />
+    <link rel="prev" title="2. WMS and the GeoExt LayerStore" href="index.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">2.1. Creating a Grid View of WMS Capabilities</a><ul>
+<li><a class="reference external" href="#configuring-a-grid-view">2.1.1. Configuring a Grid View</a></li>
+<li><a class="reference external" href="#populating-the-grid-with-data-from-a-geoext-data-wmscapabilitiesstore">2.1.2. Populating the Grid with Data from a GeoExt.data.WMSCapabilitiesStore</a></li>
+<li><a class="reference external" href="#adding-an-add-to-map-button">2.1.3. Adding an &#8220;Add to Map&#8221; button</a><ul>
+<li><a class="reference external" href="#a-closer-look">2.1.3.1. A Closer Look</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#next-steps">2.1.4. Next Steps</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">2. WMS and the GeoExt LayerStore</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="tree.html"
+                                  title="next chapter">2.2. Adding a Tree View to Manage the Map Panel&#8217;s Layers</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="creating-a-grid-view-of-wms-capabilities">
+<span id="geoext-stores-capabilities"></span><h1>2.1. Creating a Grid View of WMS Capabilities<a class="headerlink" href="#creating-a-grid-view-of-wms-capabilities" title="Permalink to this headline">¶</a></h1>
+<p>The GetCapabilities request is usually the first thing we do when we
+establish a connection to a WMS service. It returns a list of available layers,
+styles and formats, along with metadata like abstracts and attribution.</p>
+<div class="section" id="configuring-a-grid-view">
+<h2>2.1.1. Configuring a Grid View<a class="headerlink" href="#configuring-a-grid-view" title="Permalink to this headline">¶</a></h2>
+<p>In this exercise, we will create a grid, configured to display a list of all
+layers from a WMS, and create a button for adding selected layers from the grid
+to the map. For the grid, we will be using a <a class="reference external" href="http://geoext.org/lib/GeoExt/data/WMSCapabilitiesStore.html">GeoExt.data.WMSCapabilitiesStore</a>. The grid will
+be added to the &#8220;north&#8221; region of the
+<a class="reference external" href="../basics/map.html#geoext-basics-map"><em>simple map viewer</em></a> from the previous exercise.</p>
+<p>To understand the concept of a grid in Ext JS, let&#8217;s have a look at the
+following code (this is not the final snippet yet):</p>
+<div class="highlight-javascript" id="geoext-stores-capabilities-example"><div class="highlight"><pre><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;grid&quot;</span><span class="p">,</span>
+    <span class="nx">ref</span><span class="o">:</span> <span class="s2">&quot;capsGrid&quot;</span><span class="p">,</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Available Layers&quot;</span><span class="p">,</span>
+    <span class="nx">region</span><span class="o">:</span> <span class="s2">&quot;north&quot;</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="nx">viewConfig</span><span class="o">:</span> <span class="p">{</span><span class="nx">forceFit</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span>
+    <span class="nx">store</span><span class="o">:</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">ArrayStore</span><span class="p">({</span>
+        <span class="nx">data</span><span class="o">:</span> <span class="p">[[</span><span class="s2">&quot;foo&quot;</span><span class="p">,</span> <span class="s2">&quot;bar&quot;</span><span class="p">]],</span>
+        <span class="nx">fields</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;field1&quot;</span><span class="p">,</span> <span class="s2">&quot;field2&quot;</span><span class="p">]</span>
+    <span class="p">}),</span>
+    <span class="nx">columns</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Field 1&quot;</span><span class="p">},</span> <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Field 2&quot;</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p class="rubric">Tasks</p>
+<ol class="arabic simple">
+<li>If you haven&#8217;t already done so, add the text above to your
+<tt class="docutils literal"><span class="pre">map.html</span></tt> file, at the end of the application&#8217;s script block.</li>
+<li>Open the page in your browser to confirm things work:
+<a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a>. In addition to the map, you should see a grid with
+two columns and a single row of dummy data.</li>
+</ol>
+</div>
+<div class="section" id="populating-the-grid-with-data-from-a-geoext-data-wmscapabilitiesstore">
+<h2>2.1.2. Populating the Grid with Data from a GeoExt.data.WMSCapabilitiesStore<a class="headerlink" href="#populating-the-grid-with-data-from-a-geoext-data-wmscapabilitiesstore" title="Permalink to this headline">¶</a></h2>
+<p>Our grid, as it is now, uses an <tt class="docutils literal"><span class="pre">Ext.data.ArrayStore</span></tt>, which provides data
+in an array along with a field definition to create records from. This is the
+basic principle of an Ext JS store: it provides <tt class="docutils literal"><span class="pre">Ext.data.Record</span></tt> instances
+created by its <tt class="docutils literal"><span class="pre">Ext.data.Reader</span></tt>. The store can be used to populate e.g.
+grids or combo boxes.</p>
+<p>The <a class="reference external" href="http://geoext.org/lib/GeoExt/data/WMSCapabilitiesStore.html">GeoExt.data.WMSCapabilitiesStore</a> uses its reader
+to create records from a WMS GetCapabilities response. So for most
+applications, the only property required in its configuration object
+is the <tt class="docutils literal"><span class="pre">url</span></tt> for the GetCapabilities request.</p>
+<div class="highlight-javascript" id="geoext-stores-capabilities-store"><div class="highlight"><pre><span class="nx">store</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">WMSCapabilitiesStore</span><span class="p">({</span>
+    <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/geoserver/wms?SERVICE=WMS&amp;REQUEST=GetCapabilities&amp;VERSION=1.1.1&quot;</span><span class="p">,</span>
+    <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">}),</span>
+</pre></div>
+</div>
+<p>This configures the store to use a plain <a class="reference external" href="http://geoext.org/lib/GeoExt/data/WMSCapabilitiesReader.html">GeoExt.data.WMSCapabilitiesReader</a>, which uses a
+HTTP GET request to fetch the data. We add the <tt class="docutils literal"><span class="pre">autoLoad:&nbsp;true</span></tt> configuration
+property to make sure that the request gets sent as soon as the component is
+ready.</p>
+<p>The records (<a class="reference external" href="http://geoext.org/lib/GeoExt/data/LayerRecord.html">GeoExt.data.LayerRecord</a>) in this store contain
+several fields. In the grid, we want to display the <tt class="docutils literal"><span class="pre">name</span></tt>, <tt class="docutils literal"><span class="pre">title</span></tt> and
+<tt class="docutils literal"><span class="pre">abstract</span></tt> fields of each layer. So we have to configure it with the correct
+column definition:</p>
+<div class="highlight-javascript" id="geoext-stores-capabilities-columns"><div class="highlight"><pre><span class="nx">columns</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nx">sortable</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span>
+    <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="nx">sortable</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span>
+    <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Abstract&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;abstract&quot;</span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">dataIndex</span></tt> has to match the name of a record&#8217;s field. So for a grid,
+we always need to configure a store that provides the records for the rows, and
+a column model that knows which field of each record belongs to which column.</p>
+<p class="rubric">Tasks</p>
+<ol class="arabic">
+<li><p class="first">Replace the <tt class="docutils literal"><span class="pre">Ext.data.ArrayStore</span></tt> in the <a class="reference internal" href="#geoext-stores-capabilities-example"><em>example</em></a> with the <a class="reference internal" href="#geoext-stores-capabilities-store"><em>properly configured
+WMSCapabilitiesStore</em></a>
+from above.</p>
+</li>
+<li><p class="first">Replace the dummy column definition with the <a class="reference internal" href="#geoext-stores-capabilities-columns"><em>correct definition</em></a> of name, title and abstract for each
+layer.</p>
+<p>Your grid configuration object should now look like this:</p>
+<div class="highlight-javascript" id="geoext-stores-capabilities-grid"><div class="highlight"><pre><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;grid&quot;</span><span class="p">,</span>
+    <span class="nx">ref</span><span class="o">:</span> <span class="s2">&quot;capsGrid&quot;</span><span class="p">,</span> <span class="c1">// makes the grid available as app.capsGrid</span>
+    <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;Available Layers&quot;</span><span class="p">,</span>
+    <span class="nx">region</span><span class="o">:</span> <span class="s2">&quot;north&quot;</span><span class="p">,</span>
+    <span class="nx">height</span><span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="nx">viewConfig</span><span class="o">:</span> <span class="p">{</span><span class="nx">forceFit</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span>
+    <span class="nx">store</span><span class="o">:</span> <span class="k">new</span> <span class="nx">GeoExt</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">WMSCapabilitiesStore</span><span class="p">({</span>
+        <span class="nx">url</span><span class="o">:</span> <span class="s2">&quot;/geoserver/wms?SERVICE=WMS&amp;REQUEST=GetCapabilities&amp;VERSION=1.1.1&quot;</span><span class="p">,</span>
+        <span class="nx">autoLoad</span><span class="o">:</span> <span class="kc">true</span>
+    <span class="p">}),</span>
+    <span class="nx">columns</span><span class="o">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nx">sortable</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Title&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="nx">sortable</span><span class="o">:</span> <span class="kc">true</span><span class="p">},</span>
+        <span class="p">{</span><span class="nx">header</span><span class="o">:</span> <span class="s2">&quot;Abstract&quot;</span><span class="p">,</span> <span class="nx">dataIndex</span><span class="o">:</span> <span class="s2">&quot;abstract&quot;</span><span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Save your changes and reload the application:
+<a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a></p>
+</li>
+</ol>
+</div>
+<div class="section" id="adding-an-add-to-map-button">
+<h2>2.1.3. Adding an &#8220;Add to Map&#8221; button<a class="headerlink" href="#adding-an-add-to-map-button" title="Permalink to this headline">¶</a></h2>
+<p>Having successfully loaded WMS Capabilities into a grid, we will now add some
+code so we can add layers from the grid to the map.</p>
+<p class="rubric">Tasks</p>
+<ol class="arabic" id="geoext-stores-capabilities-bbar">
+<li><p class="first">Add a bottom toolbar (<tt class="docutils literal"><span class="pre">bbar</span></tt>) definition to the <a class="reference internal" href="#geoext-stores-capabilities-grid"><em>grid config object</em></a>, below the columns array (don&#8217;t forget
+to add a comma at the end of the columns array!):</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">bbar</span><span class="o">:</span> <span class="p">[{</span>
+    <span class="nx">text</span><span class="o">:</span> <span class="s2">&quot;Add to Map&quot;</span><span class="p">,</span>
+    <span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">capsGrid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">clone</span> <span class="o">=</span> <span class="nx">record</span><span class="p">.</span><span class="nx">clone</span><span class="p">();</span>
+            <span class="nx">clone</span><span class="p">.</span><span class="nx">getLayer</span><span class="p">().</span><span class="nx">mergeNewParams</span><span class="p">({</span>
+                <span class="nx">format</span><span class="o">:</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+                <span class="nx">transparent</span><span class="o">:</span> <span class="kc">true</span>
+            <span class="p">});</span>
+            <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">layers</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">clone</span><span class="p">);</span>
+            <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">zoomToExtent</span><span class="p">(</span>
+                <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Bounds</span><span class="p">.</span><span class="nx">fromArray</span><span class="p">(</span><span class="nx">clone</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;llbbox&quot;</span><span class="p">))</span>
+            <span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">}</span>
+<span class="p">}]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Reload <a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a> in your browser again. You should now see an
+&#8220;Add to Map&#8221; button on the bottom of the grid. When you select
+layers in the grid and hit that button, the layers should show up in the
+map.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="../_images/capabilities.png" src="../_images/capabilities.png" />
+<p class="caption">&#8220;world&#8221; layer selected in the grid and added to the map by clicking the
+&#8220;Add to Map&#8221; button.</p>
+</div>
+<div class="section" id="a-closer-look">
+<h3>2.1.3.1. A Closer Look<a class="headerlink" href="#a-closer-look" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s examine the handler function of the &#8220;Add to Map&#8221; button to get an idea of
+what is going on when we click it:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">handler</span><span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">app</span><span class="p">.</span><span class="nx">capsGrid</span><span class="p">.</span><span class="nx">getSelectionModel</span><span class="p">().</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">record</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">clone</span> <span class="o">=</span> <span class="nx">record</span><span class="p">.</span><span class="nx">clone</span><span class="p">();</span>
+        <span class="nx">clone</span><span class="p">.</span><span class="nx">getLayer</span><span class="p">().</span><span class="nx">mergeNewParams</span><span class="p">({</span>
+            <span class="nx">format</span><span class="o">:</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+            <span class="nx">transparent</span><span class="o">:</span> <span class="kc">true</span>
+        <span class="p">});</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">layers</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">clone</span><span class="p">);</span>
+        <span class="nx">app</span><span class="p">.</span><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">zoomToExtent</span><span class="p">(</span>
+            <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Bounds</span><span class="p">.</span><span class="nx">fromArray</span><span class="p">(</span><span class="nx">clone</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;llbbox&quot;</span><span class="p">))</span>
+        <span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Obviously, the grid has a selection model that we can access using
+<tt class="docutils literal"><span class="pre">grid.getSelectionModel()</span></tt>. Since we did not explicitly configure a selection
+model, our grid automatically instantiated an <a class="reference external" href="http://www.sencha.com/deploy/dev/docs/?class=Ext.grid.RowSelectionModel">Ext.grid.RowSelectionModel</a>.
+This model provides a method called <tt class="docutils literal"><span class="pre">each</span></tt>, which we can use to walk through
+the selected rows. Conveniently, this function gets called with the record of a
+selected row as argument.</p>
+<p>The first thing we do inside this function is clone the record and assign the
+layer additional parameters.</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">clone</span> <span class="o">=</span> <span class="nx">record</span><span class="p">.</span><span class="nx">clone</span><span class="p">();</span>
+<span class="nx">clone</span><span class="p">.</span><span class="nx">getLayer</span><span class="p">().</span><span class="nx">mergeNewParams</span><span class="p">({</span>
+    <span class="nx">format</span><span class="o">:</span> <span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+    <span class="nx">transparent</span><span class="o">:</span> <span class="kc">true</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+<p>Why? In the layer records of the WMSCapabilitiesStore, the
+<tt class="docutils literal"><span class="pre">OpenLayers.Layer.WMS</span></tt> objects (accessed with the <tt class="docutils literal"><span class="pre">getLayer()</span></tt> method) are
+configured without an image format, without projection and without styles. This
+makes sense because the record also contains information about the available
+formats, projections and styles from the Capabilities document. For our
+example, we are confident that all our layers support the WGS84 (EPSG:4326)
+projection by default and have a neat default style, so we do not care about
+projection and style. We are also confident that the WMS provides the layer in
+png format, so we set the format without looking in the record&#8217;s &#8220;formats&#8221;
+field. Finally, we set the <tt class="docutils literal"><span class="pre">transparent:&nbsp;true</span></tt> parameter, so we can stack
+layers nicely.</p>
+<p>We have prepared everything now to finally add the layer to the map:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">mapPanel</span><span class="p">.</span><span class="nx">layers</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">clone</span><span class="p">);</span>
+<span class="nx">mapPanel</span><span class="p">.</span><span class="nx">map</span><span class="p">.</span><span class="nx">zoomToExtent</span><span class="p">(</span>
+    <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Bounds</span><span class="p">.</span><span class="nx">fromArray</span><span class="p">(</span><span class="nx">clone</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;llbbox&quot;</span><span class="p">))</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+<p>To make the layer appear on the map, all we need to do is add the cloned record
+to the map panel&#8217;s layer store. Zooming to the extent of the layer is
+important for the first layer added (yes, you could now remove the <tt class="docutils literal"><span class="pre">layers</span></tt>
+config property from the mapPanel configuration object), because it is part of
+the required initialization sequence of an <tt class="docutils literal"><span class="pre">OpenLayers.Map</span></tt>. For subsequent
+layers, it is convenient to see the whole layer. The capabilities document
+provides the extent of the layer, and this information is stored in the
+record&#8217;s &#8220;llbox&#8221; field.</p>
+</div>
+</div>
+<div class="section" id="next-steps">
+<h2>2.1.4. Next Steps<a class="headerlink" href="#next-steps" title="Permalink to this headline">¶</a></h2>
+<p>It is nice to be able to add layer, but how do we remove them? And how do we
+change the order of the layers? All we need to get both is a
+<a class="reference external" href="tree.html#geoext-stores-tree"><em>layer tree</em></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="tree.html" title="2.2. Adding a Tree View to Manage the Map Panel’s Layers"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="index.html" title="2. WMS and the GeoExt LayerStore"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">2. WMS and the GeoExt LayerStore</a> &raquo;</li>
+        <li><a href="#">2.1. Creating a Grid View of WMS Capabilities</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

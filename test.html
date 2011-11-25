@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>GeoExt Workshop Application</title>
+        <link rel="stylesheet" type="text/css" href="js/ext-3.3.0/resources/css/ext-all.css">
+        <script type="text/javascript" src="js/ext-3.3.0/adapter/ext/ext-base.js"></script>
+        <script type="text/javascript" src="js/ext-3.3.0/ext-all.js"></script>
+        <script src="js/OpenLayers-2.11/lib/OpenLayers.js"></script>
+        <script type="text/javascript" src="js/GeoExt/lib/GeoExt.js"></script>
+
+        <script type="text/javascript">
+
+        Ext.BLANK_IMAGE_URL = "js/ext-3.3.0/resources/images/default/s.gif";
+        var app, items = [], controls = [];
+
+        Ext.onReady(function() {
+            app = new Ext.Viewport({
+                layout: "border",
+                items: items
+            });
+        });
+
+        items.push({
+            xtype: "gx_mappanel",
+            ref: "mapPanel",
+            region: "center",
+           // center: [-99.183056, 19.283056],
+            map: {
+                numZoomLevels: 40,
+                controls: controls
+            },
+          	extent: OpenLayers.Bounds.fromArray([
+                -99.269, 19.121,
+                -99.077, 19.313
+            ]),
+            layers: [new OpenLayers.Layer.WMS(
+                "Traza Urbana Tlalpan",
+                "http://132.248.26.87:8080/geoserver/wms",
+                {layers: "topp:traza_urbana_tlalpan"},
+                {isBaseLayer: false}
+            )]
+        });
+        controls.push(
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.Attribution(),
+            new OpenLayers.Control.PanPanel(),
+            new OpenLayers.Control.ZoomPanel()
+        );
+
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

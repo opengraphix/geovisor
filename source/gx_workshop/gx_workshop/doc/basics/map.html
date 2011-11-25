@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1.1. Creating a Map Window &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="up" title="1. GeoExt Basics" href="index.html" />
+    <link rel="next" title="1.2. Dissecting Your Map Application" href="dissect.html" />
+    <link rel="prev" title="1. GeoExt Basics" href="index.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">1.1. Creating a Map Window</a><ul>
+<li><a class="reference external" href="#working-example">1.1.1. Working Example</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">1. GeoExt Basics</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="dissect.html"
+                                  title="next chapter">1.2. Dissecting Your Map Application</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="creating-a-map-window">
+<span id="geoext-basics-map"></span><h1>1.1. Creating a Map Window<a class="headerlink" href="#creating-a-map-window" title="Permalink to this headline">¶</a></h1>
+<p>In GeoExt, following the conventions of the underlying Ext JS framework, a map
+is wrapped into an
+<a class="reference external" href="http://www.extjs.com/deploy/dev/docs/?class=Ext.Panel">Ext.Panel</a>. The map is an
+<a class="reference external" href="http://dev.openlayers.org/apidocs/files/OpenLayers/Map-js.html">OpenLayers.Map</a>
+object.</p>
+<p>It is important to understand that Ext JS encourages a web application paradigm,
+as opposed to a web page paradigm. This means that we won&#8217;t create markup, so
+the basic ingredients of our application will be:</p>
+<blockquote>
+<ul class="simple">
+<li>a <a class="reference external" href="dissect.html#geoext-basics-dissect-document"><em>minimal html document</em></a> to include
+JavaScript and CSS resources,</li>
+<li><a class="reference external" href="dissect.html#geoext-basics-dissect-init"><em>JavaScript code</em></a> for application
+initialization,</li>
+<li><a class="reference external" href="dissect.html#geoext-basics-dissect-ui"><em>JavaScript code that builds the user interface</em></a>,</li>
+<li>&#8220;Glue&#8221; JavaScript code that makes the pieces work together. We don&#8217;t have
+any in this basic example, so we will be learning about it later.</li>
+</ul>
+</blockquote>
+<div class="section" id="working-example">
+<span id="geoext-basics-map-example"></span><h2>1.1.1. Working Example<a class="headerlink" href="#working-example" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s take a look at a fully working example of a simple GeoExt application:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;html&gt;</span>
+    <span class="nt">&lt;head&gt;</span>
+        <span class="nt">&lt;title&gt;</span>GeoExt Workshop Application<span class="nt">&lt;/title&gt;</span>
+        <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">type=</span><span class="s">&quot;text/css&quot;</span> <span class="na">href=</span><span class="s">&quot;ext/resources/css/ext-all.css&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;ext/adapter/ext/ext-base.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;ext/ext-all.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;openlayers/lib/OpenLayers.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span> <span class="na">src=</span><span class="s">&quot;geoext/lib/GeoExt.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+
+        <span class="nt">&lt;script </span><span class="na">type=</span><span class="s">&quot;text/javascript&quot;</span><span class="nt">&gt;</span>
+
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">BLANK_IMAGE_URL</span> <span class="o">=</span> <span class="s2">&quot;ext/resources/images/default/s.gif&quot;</span><span class="p">;</span>
+        <span class="kd">var</span> <span class="nx">app</span><span class="p">,</span> <span class="nx">items</span> <span class="o">=</span> <span class="p">[],</span> <span class="nx">controls</span> <span class="o">=</span> <span class="p">[];</span>
+
+        <span class="nx">Ext</span><span class="p">.</span><span class="nx">onReady</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">app</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Ext</span><span class="p">.</span><span class="nx">Viewport</span><span class="p">({</span>
+                <span class="nx">layout</span><span class="o">:</span> <span class="s2">&quot;border&quot;</span><span class="p">,</span>
+                <span class="nx">items</span><span class="o">:</span> <span class="nx">items</span>
+            <span class="p">});</span>
+        <span class="p">});</span>
+
+        <span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+            <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;gx_mappanel&quot;</span><span class="p">,</span>
+            <span class="nx">ref</span><span class="o">:</span> <span class="s2">&quot;mapPanel&quot;</span><span class="p">,</span>
+            <span class="nx">region</span><span class="o">:</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span>
+            <span class="nx">map</span><span class="o">:</span> <span class="p">{</span>
+                <span class="nx">numZoomLevels</span><span class="o">:</span> <span class="mi">19</span><span class="p">,</span>
+                <span class="nx">controls</span><span class="o">:</span> <span class="nx">controls</span>
+            <span class="p">},</span>
+            <span class="nx">extent</span><span class="o">:</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Bounds</span><span class="p">.</span><span class="nx">fromArray</span><span class="p">([</span>
+                <span class="o">-</span><span class="mf">122.911</span><span class="p">,</span> <span class="mf">42.291</span><span class="p">,</span>
+                <span class="o">-</span><span class="mf">122.787</span><span class="p">,</span><span class="mf">42.398</span>
+            <span class="p">]),</span>
+            <span class="nx">layers</span><span class="o">:</span> <span class="p">[</span><span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Layer</span><span class="p">.</span><span class="nx">WMS</span><span class="p">(</span>
+                <span class="s2">&quot;Medford&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;/geoserver/wms&quot;</span><span class="p">,</span>
+                <span class="p">{</span><span class="nx">layers</span><span class="o">:</span> <span class="s2">&quot;medford&quot;</span><span class="p">},</span>
+                <span class="p">{</span><span class="nx">isBaseLayer</span><span class="o">:</span> <span class="kc">false</span><span class="p">}</span>
+            <span class="p">)]</span>
+        <span class="p">});</span>
+        <span class="nx">controls</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span>
+            <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Control</span><span class="p">.</span><span class="nx">Navigation</span><span class="p">(),</span>
+            <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Control</span><span class="p">.</span><span class="nx">Attribution</span><span class="p">(),</span>
+            <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Control</span><span class="p">.</span><span class="nx">PanPanel</span><span class="p">(),</span>
+            <span class="k">new</span> <span class="nx">OpenLayers</span><span class="p">.</span><span class="nx">Control</span><span class="p">.</span><span class="nx">ZoomPanel</span><span class="p">()</span>
+        <span class="p">);</span>
+
+        <span class="nt">&lt;/script&gt;</span>
+    <span class="nt">&lt;/head&gt;</span>
+    <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</pre></div>
+</div>
+<p class="rubric">Tasks</p>
+<ol class="arabic simple">
+<li>Copy the text above into a new file called <tt class="docutils literal"><span class="pre">map.html</span></tt>, and save
+it in the root of the workshop folder.</li>
+<li>Open the working application in your web browser:
+<a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a></li>
+</ol>
+<div class="figure">
+<img alt="../_images/map1.png" src="../_images/map1.png" />
+<p class="caption">A working map displaying the town of Medford.</p>
+</div>
+<p>Having successfully created our first GeoExt application, we&#8217;ll continue by
+looking more closely at <a class="reference external" href="dissect.html#geoext-basics-dissect"><em>the parts</em></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="dissect.html" title="1.2. Dissecting Your Map Application"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="index.html" title="1. GeoExt Basics"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">1. GeoExt Basics</a> &raquo;</li>
+        <li><a href="#">1.1. Creating a Map Window</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>

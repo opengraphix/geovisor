@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2.3. Adding a Legend Using WMS GetLegendGraphic &mdash; Developing OGC Compliant Web Applications with GeoExt</title>
+    <link rel="stylesheet" href="../_static/foss4g.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Developing OGC Compliant Web Applications with GeoExt" href="../index.html" />
+    <link rel="up" title="2. WMS and the GeoExt LayerStore" href="index.html" />
+    <link rel="next" title="2.4. Explore Map Features with a WMS GetFeatureInfo Popup" href="getfeatureinfo.html" />
+    <link rel="prev" title="2.2. Adding a Tree View to Manage the Map Panel’s Layers" href="tree.html" />
+    
+
+  </head>
+  <body>
+    <div class="header">
+        <div class="wrap">
+            <h1 class="logo"><a href="/"><img src="../_static/img/opengeo-logo.png" alt="OpenGeo" /></a></h1>
+            <h2 class="docstitle"><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a></h2>
+        </div>
+    </div>
+
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <h3><a href="../index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">2.3. Adding a Legend Using WMS GetLegendGraphic</a><ul>
+<li><a class="reference external" href="#a-legendpanel-with-wms-getlegendgraphic-images">2.3.1. A LegendPanel with WMS GetLegendGraphic Images</a><ul>
+<li><a class="reference external" href="#a-closer-look-at-the-new-code">2.3.1.1. A Closer Look at the New Code</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#what-s-next">2.3.2. What&#8217;s Next?</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="tree.html"
+                                  title="previous chapter">2.2. Adding a Tree View to Manage the Map Panel&#8217;s Layers</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="getfeatureinfo.html"
+                                  title="next chapter">2.4. Explore Map Features with a WMS GetFeatureInfo Popup</a></p>
+        </div>
+      </div>
+
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="adding-a-legend-using-wms-getlegendgraphic">
+<span id="geoext-stores-legend"></span><h1>2.3. Adding a Legend Using WMS GetLegendGraphic<a class="headerlink" href="#adding-a-legend-using-wms-getlegendgraphic" title="Permalink to this headline">¶</a></h1>
+<p>It looks like WMS is a good friend of ours: We already got a grid view of
+layers built from a WMS GetCapabilities request. Without knowing, the layers
+that we see on the map are images fetched using WMS GetMap, and now we are
+about to learn about legends created from a WMS GetLegendGraphic request.</p>
+<div class="section" id="a-legendpanel-with-wms-getlegendgraphic-images">
+<h2>2.3.1. A LegendPanel with WMS GetLegendGraphic Images<a class="headerlink" href="#a-legendpanel-with-wms-getlegendgraphic-images" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s add another panel to our WMS browser. For a legend view, GeoExt provides
+the <a class="reference external" href="http://geoext.org/lib/GeoExt/widgets/LegendPanel.html">GeoExt.LegendPanel</a>. This panel can use
+a legend image configured in the record&#8217;s <tt class="docutils literal"><span class="pre">styles</span></tt> field, or generate WMS
+GetLegendGraphic requests.</p>
+<p class="rubric">Tasks</p>
+<ol class="arabic">
+<li><p class="first">Open <tt class="docutils literal"><span class="pre">map.html</span></tt> in your text editor again. Add the following legend
+panel definition at the bottom of the application&#8217;s script block:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">items</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span>
+    <span class="nx">xtype</span><span class="o">:</span> <span class="s2">&quot;gx_legendpanel&quot;</span><span class="p">,</span>
+    <span class="nx">region</span><span class="o">:</span> <span class="s2">&quot;east&quot;</span><span class="p">,</span>
+    <span class="nx">width</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+    <span class="nx">autoScroll</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nx">padding</span><span class="o">:</span> <span class="mi">5</span>
+<span class="p">});</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Load or refresh <a class="reference external" href="/geoserver/www/gx_workshop/map.html">/geoserver/www/gx_workshop/map.html</a> in your browser to see the new
+legend panel on the right-hand side of the map. Add a layer and watch its
+legend image appear in the panel.</p>
+</li>
+</ol>
+<div class="figure">
+<img alt="../_images/legend.png" src="../_images/legend.png" />
+<p class="caption">WMS browser with a legend describing the map content.</p>
+</div>
+<div class="section" id="a-closer-look-at-the-new-code">
+<h3>2.3.1.1. A Closer Look at the New Code<a class="headerlink" href="#a-closer-look-at-the-new-code" title="Permalink to this headline">¶</a></h3>
+<p>What has happened? We have created a legend panel and placed it in the &#8220;east&#8221;
+region (i.e. on the right) of our application&#8217;s main panel. The only
+configuration option specific to the legend panel would be the <tt class="docutils literal"><span class="pre">layerStore</span></tt>
+property, which &#8211; again &#8211; references the layer store of the map panel, and
+can be omitted when the application has only one map.</p>
+</div>
+</div>
+<div class="section" id="what-s-next">
+<h2>2.3.2. What&#8217;s Next?<a class="headerlink" href="#what-s-next" title="Permalink to this headline">¶</a></h2>
+<p>As you can see, adding additional components to a GeoExt application is easy &#8211;
+thanks to Ext JS.</p>
+<p>In the last part of this exercise, we will see another way of adding components
+to an application &#8211; by using an OpenLayers.Control that creates Ext JS output
+in a listener function. Let&#8217;s try this with a
+<a class="reference external" href="getfeatureinfo.html#geoext-stores-getfeatureinfo"><em>GetFeatureInfo popup</em></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+            <li class="right" style="margin-right: 10px">
+              <a href="getfeatureinfo.html" title="2.4. Explore Map Features with a WMS GetFeatureInfo Popup"
+                 accesskey="N">next</a></li>
+            <li class="right" >
+              <a href="tree.html" title="2.2. Adding a Tree View to Manage the Map Panel’s Layers"
+                 accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Developing OGC Compliant Web Applications with GeoExt</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">2. WMS and the GeoExt LayerStore</a> &raquo;</li>
+        <li><a href="#">2.3. Adding a Legend Using WMS GetLegendGraphic</a></li>
+      </ul>
+    </div>
+
+    <div class="footer">
+      &copy; Copyright 2011, OpenPlans.
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0;vertical-align:text-bottom;" src="../_static/img/cc-by-sa.png" /></a>
+    </div>
+  </body>
+</html>
