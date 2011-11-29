@@ -11,16 +11,12 @@ Ext.onReady(function() {
     var map = new OpenLayers.Map({allOverlays: true});
    
    /* Se inicializar las capas*/
-  	 var gpm =new OpenLayers.Layer.Google(
-                "Google Physical",
-                {type: G_PHYSICAL_MAP}, {isBaseLayer: false, visibility: false}
-            );
-			
-		var gsm = 	new OpenLayers.Layer.Google(
-                "Google Streets", // the default
-                {numZoomLevels: 30}
-            );
-  	
+	
+	var gsm = 	new OpenLayers.Layer.Google(
+		"Google Streets", // the default
+		{numZoomLevels: 30}
+    );
+              	
   	var traza = new OpenLayers.Layer.WMS(
       "Traza Urbana Tlalpan",
       "http://132.248.26.87:8080/geoserver/wms", {
@@ -29,12 +25,21 @@ Ext.onReady(function() {
         format: "image/png" }, {isBaseLayer: false, visibility: false}
   	);
   	
-
- 	
- 
-
+  	var riesgos = new OpenLayers.Layer.WMS(
+  		"Riesgos",
+        "http://132.248.26.87:8080/geoserver/wms", {
+        layers: [
+           "topp:calc",
+           "topp:cam",
+           "topp:cetis",
+           "topp:imss"
+        ],
+        transparent: true,
+        format: "image/png"}, {isBaseLayer: false, buffer: 0, visibility: false}
+	);
+  	
    /* Pinta las capas del mapa*/
-    map.addLayers([gpm,gsm,traza]);
+    map.addLayers([gsm,traza,riesgos]);
 
    /* Fin  de inicio de capas*/ 
     /*map.addControl(new OpenLayers.Control.LayerSwitcher());*/
@@ -107,17 +112,22 @@ featureInfo.activate();
 /* fin de popup*/
 
 /* Crea un directorio de las capas*/
+
 var layerList = new GeoExt.tree.LayerContainer({
       text: 'Todas las capas',
-      layerStore:mapPanel.layers /*map.Layers*/,
+      layerStore: mapPanel.layers /*map.Layers*/,
       leaf: false,
-      expanded: true
+      expanded: true,
   });
+  
 
+  
 /* Inicio de panel de arbol*/
+
 
 var tree = new Ext.tree.TreePanel({
     title: "Capas del mapa",
+    expanded: true,
     region: "west",
     useArrows: true,
     width: 180,
@@ -127,11 +137,12 @@ var tree = new Ext.tree.TreePanel({
     collapsible: true,
     collapseMode: "mini",
     autoScroll: true,
-    enableDD: true,
     lines: false,
-    root: layerList
+    root: layerList,
 
 });
+
+
 /*Fin de panel de arbol*/
 
 /* Leyendas*/

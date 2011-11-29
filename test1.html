@@ -1,0 +1,129 @@
+
+<html>
+<head>
+
+<title> A Basic GeoExt Page </title>
+
+<script src="js/ext-3.3.0/adapter/ext/ext-base.js" type="text/javascript"></script>
+<script src="js/ext-3.3.0/ext-all.js"  type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="js/ext-3.3.0/resources/css/ext-all.css"></link>
+<script src="js/OpenLayers-2.11/open/OpenLayers.js" type="text/javascript"></script>
+<script src="js/GeoExt/lib/GeoExt.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="js/GeoExt/resources/geoext-all-debug.css"></link>
+
+
+
+
+
+<script type="text/javascript">
+
+    var map = new OpenLayers.Map();
+
+    Ext.onReady(function() {
+
+
+
+        var layer = new OpenLayers.Layer.WMS(
+            "Global Imagery",
+            "http://maps.opengeo.org/geowebcache/service/wms",
+            {layers: "bluemarble"}
+        );
+        map.addLayer(layer);
+
+        new GeoExt.MapPanel({
+            renderTo: 'gxmap',
+            height: 400,
+            width: 600,
+            map: map,
+            title: 'A Simple GeoExt Map'
+        });
+
+
+
+
+
+    });
+
+    function query_db_button_cb() {
+      map.zoomToMaxExtent();
+
+   }
+
+
+</script>
+</head>
+<body>
+<script type="text/javascript">
+
+
+
+new Ext.Toolbar({
+    renderTo: document.body,
+    items: [{
+	xtype: 'tbbutton',
+	text: 'Button'
+    },{
+	xtype: 'tbbutton',
+	text: 'Menu Button',
+	menu: [{
+	  text: 'Better',
+	},{
+	  text: 'Good'
+	},{
+	  text: 'Best'
+	}],
+
+
+
+    },{
+	xtype: 'tbsplit',
+	text: 'Split Button',
+	menu: [{
+	   text: 'Item One'
+	},{
+	   text: 'Item Two'
+	},{
+	   text: 'Item Three'
+        }]
+     }]
+  });
+
+
+
+</script>
+
+
+
+
+<div id="gxmap"></div>
+
+
+
+       <td>
+
+       <tr>
+
+          <td>
+
+            NAME:<input type="text" value="sample"       name="namtab"  id="ftabl" size="10" />
+
+            ADDR:<input type="text" value="sample"       name="addrtab" id="adrabl" size="10" />
+
+            ACCT:<input type="text" value="006850002300" name="accttab" id="actabl" size="13" />
+
+            <input type="submit" onclick="javascript: query_db_button_cb();"  name="search_but"     value="Search" />
+
+            <input type="submit" onclick="javascript: showselrecords();"      name="show_but"       value="GET_RECORDS" />
+
+            <input type="submit" onclick="javascript: zoom_to_xtnts();"       name="zoombut"        value="Zoom to Select" />
+
+            <input type="submit" onclick="javascript: unselect();"            name="desallbut"      value="CLR_SEL" />
+
+          </td>
+
+        </tr>
+
+      </td>
+
+</body>
+</html>
