@@ -1,0 +1,44 @@
+body {
+    background: #fff;
+    font: 86% 'Lucida Grande', 'Lucida Sans Unicode', Verdana, sans-serif;
+    padding: 50px;
+}
+
+h1, h2, h3 { font-family: "Trebuchet MS",Verdana,Sans-Serif; }
+
+h1 {
+    font-size: 1.2em;
+    letter-spacing: 0.4pt;
+    text-transform: uppercase;
+    padding-top: 0.5em;
+    color: #1C417C;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1em;
+    letter-spacing: 0.4pt;
+    text-transform: uppercase;
+    padding-top: 0.5em;
+    color: #1C417C;
+    margin-bottom: 12px;
+}
+
+p { margin-bottom:7px; }
+
+strong { font-weight:bolder; }
+
+em { font-style: italic }
+
+
+.gx-popup-anc{background:transparent url(../libs/geoext/img/default/anchor.png) no-repeat 0 0;position:relative;top:-1px;left:5px;z-index:2;height:16px;width:31px;}
+
+.info-panel .x-panel-body {
+    font: 11px arial,tahoma,helvetica,sans-serif;
+    padding-top: 10px;
+    padding-left: 20px;
+}
+
+.info-panel .x-panel-body ul { list-style-type: disc; }
+
+a img{ border: none; }

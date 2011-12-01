@@ -1,0 +1,71 @@
+/*!
+ * Ext JS Library 3.4.0
+ * Copyright(c) 2006-2011 Sencha Inc.
+ * licensing@sencha.com
+ * http://www.sencha.com/license
+ */
+body {
+    font-family:helvetica,tahoma,verdana,sans-serif;
+    padding:20px;
+    padding-top:32px;
+    font-size:13px;
+    background-color:#fff !important;
+}
+p {
+    margin-bottom:15px;
+}
+h1 {
+    font-size:large;
+    margin-bottom:20px;
+}
+h2 {
+    font-size:14px;
+    color:#333;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+table#main-container {
+    width: 630px;
+}
+
+table#main-container tr { vertical-align:top }
+
+#tree-container {
+    overflow: auto;
+    width:380px; border:1px solid #c3daff;
+}
+
+#toolbar-div {
+    overflow: auto;
+}
+
+#tree-div {
+    height:400px;
+    overflow: auto;
+}
+
+#right {
+    float: right;
+}
+
+#right-bottom {
+    margin-top: 10px;
+}
+
+#config-type {
+    padding-bottom: 10px;
+}
+
+.group.x-tree-node-leaf .x-tree-node-icon {
+    background-image: url("../libs/ext-3.4.0/resources/images/default/tree/folder.gif");
+}
+.group.x-tree-node-collapsed .x-tree-node-icon {
+    background-image: url("../libs/ext-3.4.0/resources/images/default/tree/folder.gif");
+}
+.group.x-tree-node-expanded .x-tree-node-icon {
+    background-image: url("../libs/ext-3.4.0/resources/images/default/tree/folder-open.gif");
+}
+.no-icon {
+    background-image:url('../libs/ext-3.4.0/resources/images/default/s.gif') !important;
+}

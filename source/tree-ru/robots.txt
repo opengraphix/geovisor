@@ -1,0 +1,10 @@
+User-agent: *
+Host: map.rostmuseum.ru
+Disallow: /admin/
+Disallow: /cgi-bin/
+Disallow: /images/
+Disallow: /js/
+Disallow: /libs/
+Disallow: /scripts/
+Disallow: /tmp/
+Disallow: /upload/
