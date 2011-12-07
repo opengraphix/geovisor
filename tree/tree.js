@@ -17,21 +17,14 @@ Ext.onReady(function() {
     // create a map panel with some layers that we will show in our layer tree
     // below.
     mapPanel = new GeoExt.MapPanel({
-        border: true,
+	title: "Mapa",        
+	border: true,
         region: "center",
         // we do not want all overlays, to try the OverlayLayerContainer
         map: new OpenLayers.Map({allOverlays: false}),
         center: [-99.183056, 19.283056],
         zoom: 10,
         layers: [
-          /*  new OpenLayers.Layer.WMS("Global Imagery",
-                "http://maps.opengeo.org/geowebcache/service/wms", {
-                    layers: "bluemarble"
-                }, {
-                    buffer: 0,
-                    visibility: false
-                }
-            ),*/
 
 	new OpenLayers.Layer.WMS("Open Layers",
                 "http://vmap0.tiles.osgeo.org/wms/vmap0", {
@@ -85,7 +78,8 @@ Ext.onReady(function() {
             ),
             // create a group layer (with several layers in the "layers" param)
             // to show how the LayerParamLoader works
-            new OpenLayers.Layer.WMS("Riesgos",
+            // clasificacion: cartografia basica, peligros, vulnerabilidad, riesgos
+            new OpenLayers.Layer.WMS("Peligros",
                 "http://demo.opengeo.org/geoserver/wms", {
                     layers: [
                         "topp:tasmania_state_boundaries",
@@ -104,7 +98,26 @@ Ext.onReady(function() {
                 }
             ),
 
-            new OpenLayers.Layer.WMS("Peligros",
+	 new OpenLayers.Layer.WMS("Vulnerabilidades",
+                "http://demo.opengeo.org/geoserver/wms", {
+                    layers: [
+                        "topp:tasmania_state_boundaries",
+                        "topp:tasmania_water_bodies",
+                        "topp:tasmania_cities",
+                        "topp:tasmania_roads"
+                    ],
+                    transparent: true,
+                    format: "image/gif"
+                }, {
+                    isBaseLayer: false,
+                    buffer: 0,
+                    // exclude this layer from layer container nodes
+                    displayInLayerSwitcher: false,
+                    visibility: false
+                }
+            ),
+
+            new OpenLayers.Layer.WMS("Riesgos",
                 "http://demo.opengeo.org/geoserver/wms", {
                     layers: [
                         "topp:tasmania_state_boundaries",
@@ -145,7 +158,7 @@ Ext.onReady(function() {
         }
     }, {
         nodeType: "gx_layer",
-        layer: "Riesgos",
+        layer: "Peligros",
         isLeaf: false,
         // create subnodes for the layers in the LAYERS param. If we assign
         // a loader to a LayerNode and do not provide a loader class, a
@@ -155,7 +168,17 @@ Ext.onReady(function() {
         }
     }, {
         nodeType: "gx_layer",
-        layer: "Peligros",
+        layer: "Vulnerabilidades",
+        isLeaf: false,
+        // create subnodes for the layers in the LAYERS param. If we assign
+        // a loader to a LayerNode and do not provide a loader class, a
+        // LayerParamLoader will be assumed.
+        loader: {
+            param: "LAYERS"
+        }
+    },	{
+        nodeType: "gx_layer",
+        layer: "Riesgos",
         isLeaf: false,
         // create subnodes for the layers in the LAYERS param. If we assign
         // a loader to a LayerNode and do not provide a loader class, a
@@ -206,54 +229,11 @@ Ext.onReady(function() {
         },
         rootVisible: false,
         lines: false,
-        bbar: [{
-            text: "Show/Edit Tree Config",
-            handler: function() {
-                treeConfigWin.show();
-                Ext.getCmp("treeconfig").setValue(treeConfig);
-            }
-        }]
+        
     });
 
-    // dialog for editing the tree configuration
-    var treeConfigWin = new Ext.Window({
-        layout: "fit",
-        hideBorders: true,
-        closeAction: "hide",
-        width: 300,
-        height: 400,
-        title: "Tree Configuration",
-        items: [{
-            xtype: "form",
-            layout: "fit",
-            items: [{
-                id: "treeconfig",
-                xtype: "textarea"
-            }],
-            buttons: [{
-                text: "Save",
-                handler: function() {
-                    var value = Ext.getCmp("treeconfig").getValue()
-                    try {
-                        var root = tree.getRootNode();
-                        root.attributes.children = Ext.decode(value);
-                        tree.getLoader().load(root);
-                    } catch(e) {
-                        alert("Invalid JSON");
-                        return;
-                    }
-                    treeConfig = value;
-                    treeConfigWin.hide();
-                }
-            }, {
-                text: "Cancel",
-                handler: function() {
-                    treeConfigWin.hide();
-                }
-            }]
-        }]
-    });
-    
+   
+   // panel derecho 
     new Ext.Viewport({
         layout: "fit",
         hideBorders: true,
